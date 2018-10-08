@@ -1,0 +1,508 @@
+html
+{
+	height: 100%;
+	box-sizing:border-box
+}*,*:before,*:after
+{
+	box-sizing:inherit
+}
+
+html
+{
+	-ms-text-size-adjust:100%;
+	-webkit-text-size-adjust:100%
+}
+
+body
+{
+	margin:0;
+	font-family: 'Rajdhani', sans-serif;
+	font-size:100%;
+	height: 100%;
+	display: flex;
+  	flex-direction: column;
+}
+
+article,aside,details,figcaption,figure,footer,header,main,menu,nav,section,summary
+{
+	display:block
+}
+
+header
+{
+	color:#f3fffb;
+	font-size:calc(0.6rem + 1vw);
+	background: linear-gradient(#272727,#3c3b3b);
+	padding:10px;
+}
+
+header .title-path
+{
+	cursor: pointer;
+}
+
+.logout
+{
+	display: none;
+	text-align: right;
+	padding-right:10px;
+	font-size:calc(0.5rem + 0.5vw);
+	cursor: pointer;
+	color:#272727;
+}
+
+nav{
+	color:#f3fffb;
+}
+nav .login .tile-container
+{
+	background-color: #FFF;
+}
+
+nav .login .tile-container .tile
+{
+	margin:20px auto 20px auto;
+	height:130px;
+	width:240px;
+}
+
+nav .login .tile-container .tile label
+{
+	display: block;
+	padding: 5px 5px 0px 5px;
+}
+
+nav .login .tile-container .tile input[type="text"],
+nav .login .tile-container .tile input[type="password"]
+{
+	margin:0px 5px 0px 5px;
+	width:230px;
+}
+
+nav .menu-container.login .tile-container .tile .caption
+{
+	position: relative;
+	margin:10px 5px 5px auto;
+	background-color:#fe9900; 
+	display:block;
+	width:100px;
+	padding:2px;
+}
+
+nav .menu-container{
+	display: none;
+}
+
+nav .tile-container
+{
+	width:100%;
+	justify-content: flex-starts;
+	display: -ms-flexbox; /* IE10 */
+	display: flex;
+	-ms-flex-wrap: wrap; /* IE10 */
+	flex-wrap: wrap;
+	background-color: #dddddd;
+	flex-direction: row;
+}
+
+nav .tile-container .tile.home, 
+nav .tile-container .tile.level-up
+{
+	background-color: #fe9900;
+}
+
+nav .tile-container .tile
+{
+	border:1px solid white;
+	position: relative;
+	background-size: 70%;
+	background-position: top center;
+	background-repeat: no-repeat;
+	height:calc(3rem + 7vw);
+	width:calc(3rem + 7vw);
+	max-height: 120px;
+	max-width: 120px;
+	background-color: #676565;
+	cursor: pointer;
+	margin:7px;
+}
+
+
+nav .tile-container .tile:hover
+{
+	background-color: #a39f9f;
+}
+
+nav .tile-container .tile.home:hover, 
+nav .tile-container .tile.level-up:hover
+{
+	background-color: #fcb953;
+}
+
+nav .tile-container .tile .caption
+{
+	width: 100%;
+	position: absolute;
+	bottom:1px;
+	display: block;
+	text-align: center;
+	z-index: 0;
+	line-height: calc(0.5rem + 0.5vw);
+	font-size: calc(0.5rem + 0.5vw);
+}
+
+.delete-entry{
+	cursor: pointer;
+	background-color:red;
+	border-radius: 10px;
+	color:white;
+	text-align: center;
+	font-weight: bold;
+}
+
+#message{
+	width: 100%;
+	height: 25px;
+	padding: 3px 10px;
+	display: none;
+	font-size: calc(0.6rem + 0.5vw);
+	cursor: pointer;
+	color:#f3fffb;
+	text-align: center;
+	background-image: url("../../img/common/close.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+.msg-error{
+	background-color: #f93e3e;
+}
+
+.msg-info{
+	background-color: #f7af33;
+}
+
+.msg-warning{
+	background-color: orange;
+}
+
+.msg-success{
+	background-color: #56ce66;
+}
+
+main
+{
+	padding:10px;
+	color: #272727;
+	-webkit-flex-shrink: 0; 
+	-webkit-flex-basis: auto;
+	-webkit-flex-grow: 1;
+	flex-shrink: 0; 
+	flex-grow: 1;
+	flex-basis: auto;
+	font-size: calc(0.6rem + 0.8vw);
+
+}
+
+main .menu-authority
+{
+	list-style-type: square;
+	padding-left:15px;
+}
+
+main .users-combobox
+{
+	background-color: #d4e2f9;
+}
+
+main .news-search-list .news-item
+{
+	cursor: pointer;
+}
+
+main .news-search-list .news-item h2
+{
+	
+	margin:5px 0px 5px 0px;
+	font-size:calc(0.8rem + 0.3vw);
+}
+
+main .news-search-list .news-item p
+{
+	margin:3px 0px;
+	font-size:calc(0.5rem + 0.3vw);
+}
+
+main .news-search-list .news-item .valid
+{
+	margin:15px 0px 0px 0px;
+}
+
+main .news-search-list .news-item .author
+{
+	text-align: right;
+}
+
+main .formContainer
+{
+	width: 50%;
+	margin: auto;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    font-size:calc(0.6rem + 0.3vw);
+}
+
+form fieldset
+{
+	border:1px solid #e2e2e2;
+	border-radius: 4px;
+        padding: 15px;
+}
+
+form legend
+{
+	text-align: right;
+	font-size:calc(0.6rem + 0.7vw);
+        font-weight: bold;
+}
+
+form input[type=text], 
+form input[type=password],
+select {
+	font-size:calc(0.6rem + 0.3vw);
+	color: #272727;
+    width: 100%;
+    padding: 10px 16px;
+    margin: 6px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+form .check-box
+{
+	text-align:right;
+	margin:5px;
+}
+
+form input[type=submit], button {
+	color: #272727;
+    width: 100%;
+    background-color: #fe9900;
+    color: white;
+    padding: 10px 16px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form input[type=submit]:hover, button:hover {
+    background-color: #b26c01;
+}
+
+form .error{
+	color:#b20008;
+	display: block;
+	font-size:calc(0.6rem + 0.3vw);
+	margin-bottom: 3px;
+}
+
+form .marked
+{
+	font-weight: bold;
+	background-color:#7bce9c;
+}
+
+form .un-marked
+{
+	font-weight: normal;
+	background-color: none;
+}
+footer
+{
+	margin:20px auto;
+	-webkit-flex-shrink: 0; 
+	flex-shrink: 0;
+	color: black ;
+}
+
+#documentForm ul
+{
+	list-style-type: none;
+	padding:10px;
+}
+
+.document-container .document-folder
+{
+
+}
+
+#documentForm .subtitle
+{
+	font-weight: bold;
+}
+
+
+/******** gallery style *********/
+#folder_container
+{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.folder-item-container
+{
+	width: 178px;
+	height: 140px;
+	margin: 25px 10px 10px 10px;
+	border: 1px solid gray; 
+	cursor: pointer;
+	position: relative;
+
+}
+.folder-item-container .file-container
+{
+	height: 138px;
+	overflow: hidden;
+	background-image: url("../../uploads/common/no_image_16_10.png");
+}
+
+.error-border
+{
+	outline:3px solid red;
+}
+
+.folder-item-container img
+{
+	display: block;
+	height:51px;
+	width:73px;
+	position: relative;
+	left:78px;
+	top:51px;
+
+}
+.folder-item-container .folder_name
+{
+	width: 100%;
+	text-align: center;
+	position: relative;
+	top: 5px;
+	font-size: calc(0.6rem + 0.5vw);
+}
+
+
+.folder-item-container .delete_selector,
+.folder-item-container .picture_selector_cont
+{
+	position: absolute;
+	z-index: 100;
+	top: 3px;
+	left: 3px;
+}
+
+#folder_container #toggle_all_container
+{
+	display: block;
+	flex: 0 0 100%;
+}
+
+#fileListForm .file_selector
+{
+	position: absolute;
+	z-index: 100;
+	top: 3px;
+	right: 3px;
+	padding: 10px;
+	height: 2 0px;
+}
+
+#fileListForm .subtitle
+{
+	margin-top:3px;
+	color:#676565;
+	text-align: center;
+	overflow: hidden;
+	height: 20px;
+	width: 150px;
+	font-size: calc(0.5rem + 0.5vw);
+}
+
+#fileListForm .original_file_name
+{
+	color:#676565;
+	text-align: center;
+	font-size: calc(0.5rem + 0.4vw);
+	overflow: hidden;
+	height: 30px;
+	width: 150px;
+}
+
+#fileListForm .subtitle-modify-form-btn
+{
+	cursor: pointer;
+	text-align: center;
+	width: 100%;
+	padding:2px;
+	color:#f3fffb;
+	background-color: #fe9900;
+
+}
+
+#fileListForm .subtitle-modify-form-btn:hover
+{
+	background-color: #fcb953;
+}
+
+#file_cont{
+	display: none;
+	margin-top: 20px;
+}
+
+
+
+
+@media (max-width:600px){
+	main .formContainer
+	{
+		width:100%;
+	}
+
+	nav .tile-container .tile,
+	nav .sub-tile-container .tile
+	{
+		max-width: 100%;
+		width: 100%;
+		height: 100%;
+		margin:0px;
+		background-image: none !important;
+	}
+
+	nav .tile-container .tile .caption,
+	nav .sub-tile-container .tile .caption
+	{
+		position: sticky;
+		padding: 20px 10px;
+		font-size: calc(1.2rem + 0.5vw);
+	}
+}
+
+@media (max-width:992px) and (min-width:601px)
+{
+	main .formContainer
+	{
+		width:75%;
+	}
+
+	nav .tile-container .tile
+	{
+		margin:0px;
+
+
+	}
+}
+
