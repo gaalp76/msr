@@ -191,11 +191,13 @@ main{
 #logo{
 	position: absolute;
 	top: 10%;
-	background-image: url(../img/msrlogo1.png);
-	width: 35%;
-	height: 35%;
+	left:2%;
+	background-image: url(../img/logos.png);
+	width: 25%;
+	height: 50%;
+
 	background-size: contain;
-	background-repeat: no-repeat;;
+	background-repeat: no-repeat;
 }
 #north-pointer{
 	position: absolute;
@@ -209,7 +211,7 @@ main{
 }
 
 #information-box{
-	display: none;
+
 	position: absolute;
 	left:0;
 	top:70px;
@@ -223,6 +225,37 @@ main{
 	background: linear-gradient(to bottom right, #0c4252, #06242d);
 	color:white;
 	width:176px;
+	display: none;
+}
+
+#information-box .head-right{
+	position: relative;
+	top:100px;
+	width:22px;
+	color:white;
+
+	/* Safari */
+	-webkit-transform: rotate(-90deg);
+
+	/* Firefox */
+	-moz-transform: rotate(-90deg);
+
+	/* IE */
+	-ms-transform: rotate(-90deg);
+
+	/* Opera */
+	-o-transform: rotate(-90deg);
+
+	/* Internet Explorer */
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+
+	animation: blinker 3s linear infinite;
+	}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 #information-box .content{
@@ -237,8 +270,11 @@ main{
 #information-box .open-close-container{
 
 	float:right;
-	background-color:none;
 	overflow: none;
+	background-color: white;
+	height: 170px;
+	background: linear-gradient(to bottom right, #0c4252, #06242d);
+	border:1px solid black;
 }
 
 #information-box .open-close{
@@ -284,7 +320,7 @@ main{
 	position: absolute;
 	top: 33%;
 	left: 74%;
-	font-size: calc(3rem + 1.2vw);
+	font-size: calc(2.5rem + 1.2vw);
 	color: white;
 }
 #box-container{

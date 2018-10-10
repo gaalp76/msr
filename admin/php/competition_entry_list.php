@@ -168,8 +168,8 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 							$er_name, 
 							$er_phone, 
 							
-							"<input type='checkbox' ".($checked=$admin_reg_confirm == '1'?'checked':'')." ".($disabled=$admin_reg_confirm == '1'?'disabled':'')." name='accepted' class='accepted' value='".$id."'>",
-							$admin_reg_confirm == '1'?"<div class='delete-entry' competitionregid='".$id."'>Visszavonás</div>":""
+							"<input type='checkbox' ".($checked=$admin_reg_confirm == '1'?'checked':'')." ".($disabled=$admin_reg_confirm == '1'?'disabled':'')." name='accepted' class='accepted' value='".$competitionRegID."'>",
+							$admin_reg_confirm == '1'?"<div class='delete-entry' competitionregid='".$competitionRegID."'>Visszavonás</div>":""
 						);
     	$data['row'][] = $dataRaw;
 	}

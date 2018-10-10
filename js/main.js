@@ -1867,7 +1867,8 @@ $(document).ready(function(){
 
 	if($('#information-box .content').html())
 	{
-		$('#information-box').show("slide", { direction: "left" }, 100);
+		$('#information-box').animate({left:"-=178"}, 100); 
+		//$('#information-box').show("slide", { direction: "left" }, 100);
 		get_content('CheckOpenCompetitions','',1,'information-box');
 	}
 

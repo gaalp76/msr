@@ -80,7 +80,10 @@
 				Megértését köszönjük!</p>
 			</div>
 			<div class="open-close-container">
-					<div class="open-close close">
+					<div class="open-close open">
+					</div>
+					<div class="head-right">
+						Aktualitások
 					</div>
 			</div>
 		</div>
