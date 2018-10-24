@@ -8,7 +8,7 @@
 		.odt-main thead {
 			background-color: #F1812B;
     		color: #fff;
-    		font-size: 1em;
+    		font-size: 80%;/*1em;*/
 		}
 		/*.logo.logo1 {
 			font-size: 28px !important;
@@ -24,7 +24,11 @@
 		.odt-main tr td {
 			padding: 5px;
     		border: 1px solid #ddd;
+    		font-size: 70%;
+		}
 
+		.odt-main tr:hover{
+			background-color: #cccccc;
 		}
 
 		.odt-main .start_date, .odt-main .end_date, .odt-main .private_price

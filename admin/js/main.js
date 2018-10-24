@@ -122,7 +122,9 @@ function goTop()
 
 function showMessage(msg,onTop=1)
 {	
-	var msgType;	
+	var msgType;
+
+	goTop();
 	
 	if ( msg.indexOf("failed") >= 0 ) 
 	{
@@ -2446,26 +2448,33 @@ function load_content(url)
 								if($(this).val())
 								{
 									$('main').append("<button id='modify_accepted' type='button' >Mentés és levélküldés</button>");
-									$('main').append("<table class='entry-table'>"+
+									$('main').append("<div id='entry-table-container'></div>");
+
+									$('#entry-table-container').append("<table class='entry-table'>"+
 												"<thead>" +
 													"<tr>" +
 														"<th>Csapatnév</th>" +
+														"<th>Ok</th>" +														
 														"<th>Reg. kód</th>" +
-														"<th>Vezetéknév</th>" +
-														"<th>Keresztnév</th>" +
+														"<th style='white-space:nowrap'>Versenyző neve</th>" +
 														"<th>Szül.</th>" +
-														"<th>Anyja neve</th>" +
-														"<th>Távolság</th>" +
+														"<th style='white-space:nowrap'>Anyja neve</th>" +
+														"<th>Táv.</th>" +
 														"<th>Póló</th>" +
-														"<th>Telefon</th>" +
 														"<th>Email</th>" +
-														"<th>Neme</th>" +
+														"<th>Neme</th>" +														
+														"<th>Megerősítő email</th>" +
+														"<th>City</th>" +
 														"<th>SZIG</th>" +
+														"<th>Telefon</th>" +
 														"<th>ER neve</th>" +
 														"<th>ER telefon</th>" +
+														"<th>Visszaigazolva</th>" +
 														"<th>Elfogadva</th>" +
 														"<th>Visszavonás</th>" +
+														"<th>Törlés</th>" +
 														"</tr>" +
+
 												"</thead>" +
 												"<tbody>" +
 												"</tbody>" +
@@ -2477,13 +2486,22 @@ function load_content(url)
 										param: $(this).val(),
 										callback: function(data) {
 												var myTable = $(".entry-table").tableExport();
+
+												if ($('#entry-numrows').length) 
+												{
+													$('#entry-numrows').html("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+"</div>");
+												}
+												else
+												{
+													$('#modify_accepted').after("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+"</div>");
+												}
 												myTable.update({
 													filename: $(".competition-combobox option:selected").text(),
 													formats: ["xlsx", "csv", "txt"],
 													
 													exportButtons: true,
 													position: "bottom",
-													ignoreCols: [14,15] 
+													ignoreCols: [1,18,19] 
 												});
 												
 										  		if(!data.num_rec)
@@ -2515,11 +2533,76 @@ function load_content(url)
 															}
 													});
 												});
+
+												$('.remove-entry').click(function(e){
+													var that = $(this);
+													$.confirm({
+															title: 'Törlés',
+															boxWidth: '30%',
+															useBootstrap: false,
+															content: 'Biztosan törli a nevezést?',	
+															buttons: {
+																confirm: {
+																	text: 'Igen',
+																	action: function(){
+																		var data = [];
+																		data.push({name: "action", value: "remove"});
+																		data.push({name: "competitionRegID", value: that.attr("competitionregid")});
+																		get_content(linked_to + "Entry" + instanceOf,$.param(data),1);											
+																	}
+																},
+																cancel: {
+																	text: 'Mégsem'
+
+																}
+															}
+													});
+												});
+
+												$('.send_conf_competition_email_btn').click(function(e){
+													var that = $(this);
+													$.confirm({
+															title: 'Visszavonás',
+															boxWidth: '30%',
+															useBootstrap: false,
+															content: 'Biztosan kiküldi a megerősítő e-mailt?',	
+															buttons: {
+																confirm: {
+																	text: 'Igen',
+																	action: function(){
+																		$.post("php/main.php",{
+																							menu: linked_to + "Entry",
+																							linked_to: linked_to,
+																							target: "main",
+																							action: "send_conf_competition_email",
+																						   	competitionRegID: that.attr("comp_reg_id"),
+																						   	competitionID: that.attr("competition_id"),
+																						   	lang: that.attr("lang")
+																						   },
+																				function(data)
+																				{
+																					
+																					data = jQuery.parseJSON(data);
+																					if (data.message == "sent_confirm_comp_reg_mail")
+																					{
+																						that.parent().html("Elküldve");
+																					}
+																					else
+																					{
+																						showMessage("failed_sending_email");
+																					}
+																				});
+																	}
+																},
+																cancel: {
+																	text: 'Mégsem'
+
+																}
+															}
+													});
+												});
 										}
 									});
-
-									
-
 
 									$('#modify_accepted').click(function(e){
 										$.confirm({

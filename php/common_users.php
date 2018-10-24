@@ -255,11 +255,12 @@ class CommonUser extends User
 					if ($stmt = $this->db->prepare("INSERT INTO validator_code (username, create_date, expiration_date, hash) VALUES (?,?,?,?)"))
 					{
 						$expirationDate = date('Y-m-d H:i:s',strtotime(date('Y-m-d H:i:s') . ' +3 day'));
-						$creatDate = date('Y-m-d H:i:s');
+						$createDate = date('Y-m-d H:i:s');
 						$stmt->bind_param("ssss", $username, $createDate, $expirationDate, $hashStr);
 						$stmt->execute(); 
-
-						if ($stmt->affected_rows > 0) return "success_forgotpassword";
+						
+						if ($stmt->sqlstate == "00000") return "success_forgotpassword";
+						else return $stmt->sqlstate;
 					}
 					
 				}

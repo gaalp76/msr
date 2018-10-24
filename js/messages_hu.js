@@ -74,7 +74,7 @@
 	success_front_login: "Köszöntjük a Honvéd Ezüst Nyíl Sportegyesület honlapján!",
 	success_logout: "Viszontlátásra!",
 	success_user_validation: "Köszönjük regisztrációját! A validálási folyamat zárásaként email értesítés után használhatja fiókját.",
-	success_forgotpassword: "Az új jelszót elküldtük a regisztrációnál megadott email címére.",
+	success_forgotpassword: "A jelszó megváltoztatásához szükséges emailt elküldtük a regisztrációnál megadott email címére.",
 	success_password_change: "A jelszava megváltozott.",
 	success_data_modify: "Az adatok módosítása megtörtént.",
 	success_order: "Köszönjük rendelését!",
@@ -107,6 +107,7 @@
 	success_add_team: "Csapat létrehozva.",
 	success_add_teamate: "Felvétele a csapatba megtörtént.",
 	success_team_delete: "Csapat törölve",
+	success_remove_user: "Kérésének megfelelően töröltük a portálról!",
 
 	warning_invalid_hash: "Érvénytelen érvényesítő kód.",
 	warning_username_not_found: "A felhasználónév nem szerepel az adatbázisban.",

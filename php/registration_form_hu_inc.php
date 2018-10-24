@@ -6,7 +6,7 @@ if($isCompetitionRegister)
 	$html .= '<div class="information" style="width:100%; padding:10px">';
 	$html .= 	'<h2>A nevezés lépései</h2>';
 	$html .=  	'<ol>';
-	$html .= 	'<li>Töltse le és hozza magával a kitöltött <a href="../felelossegi_nyilatkozat.docx">felelősségvállalási nyilatkozatot</a> a versenyre!</li>';
+	$html .= 	'<li>Töltse le és hozza magával a kitöltött <a href="../docs/felelossegi_nyilatkozat.docx">felelősségvállalási nyilatkozatot</a> a versenyre!</li>';
 	$html .= 	'<li>Regisztrált felhasználó esetén a lenti űrlap üres mezőit kell kitölteni.<br> Adatváltoztatás lehetséges az email cím kivételével.</li>';
 	$html .= 	'<li>Nem regisztrált felhasználó esetén az összes mezőt ki kell tölteni.</li>';
 	$html .= 	'<li>Az adatok helyes kitöltése, valamint az adatvédelmi nyilatkozat elfogadása után a nevezés gombra kell kattintani.</li>';
@@ -130,7 +130,7 @@ $html .= 	'</div>';
 if($isCompetitionRegister)
 {
 
-	$html .=	'<div class="btn-container">Elfogadom az <a href="..\adatvedelmi_szabalyzat.pdf"> adatvédelmi-</a> valamint a <a href="..\verseny_szabalyzat.docx">verseny
+	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf" target="_blank"> adatvédelmi-</a> valamint a <a href="../docs/verseny_szabalyzat.docx">verseny
 szabályzatot</a>.<input type="checkbox" name="accept_rules" id="accept_rules"></div>';
 	$html .=	'<div class="btn-container">';
 	$html .= 		'<button id="sign-up-btn" type="button" class="blue2">Nevezek</a>';
@@ -138,7 +138,7 @@ szabályzatot</a>.<input type="checkbox" name="accept_rules" id="accept_rules"><
 }
 else
 {
-	$html .=	'<div class="btn-container">Elfogadom az <a href="..\adatvedelmi_szabalyzat.pdf">adatvédelmi 
+	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf"  target="_blank">adatvédelmi 
 szabályzatot</a>. <input type="checkbox" name="accept_rules" id="accept_rules"></div>';
 	$html .=	'<div class="btn-container"><button id="sign-up-btn" type="button" class="blue2">'.$btnName = ($userDataArray!="" ?  "Mentés" : "Elküld").'</a></div>';
 }

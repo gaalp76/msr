@@ -125,7 +125,7 @@ switch ($menu)
 	case $linkedTo."ConfirmCompetitionRegistration".$instanceOf:
 					$CompetitionEntry = new CompetitionEntry($db);
 					
-					$returnArray["message"] = $CompetitionEntry->confirmCompRegistration($_GET["comp_reg_id"]);
+					$returnArray["message"] = $CompetitionEntry->confirmCompRegistration($_GET["comp_reg_id"], $_GET["competitionID"], $_GET["lang"]);
 				break;
 
 	case $linkedTo."Home".$instanceOf:
@@ -186,6 +186,15 @@ switch ($menu)
 		
 		$returnArray["content"] = $user->getUserRegisterForm($_SESSION["lang"]);
 		
+	break;
+
+	case $linkedTo."UserRemove".$instanceOf:
+		if (isset($user ->userID) && $user->userID > 0)
+		{
+			$returnArray["message"] = $user->removeUser( $user->userID);
+			$user->logoutUser();
+			$returnArray["login_container"] = $user->getUserLoginForm($_SESSION["lang"]);
+		}
 	break;
 
 	case $linkedTo."UsersEdit".$instanceOf:

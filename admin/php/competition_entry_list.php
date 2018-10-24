@@ -11,18 +11,23 @@ $sort_col = (!empty($_GET['sortCol']))?$_GET['sortCol']:0;
 $sort_type = (!empty($_GET['sortType']))?$_GET['sortType']:"ASC";
 $search_col = array(
 						"team_name",
-						"firstname",
+						"admin_reg_confirm",
+						"id",
 						"lastname",
+						"born_date",
+						"mother_name",
+						"comp_dist",
+						"t_shirt",
 						"email",
-						"phone",
-						"identity_card", 
-						"mother_name", 
-						"comp_dist", 
-						"sex", 
-						"born_date", 
+						"sex",
+						"conf_email_sent",
+						"city",
+						"identity_card",
+ 						"phone",
 						"er_name", 
-						"er_phone", 
-						"t_shirt" 
+						"er_phone",
+						"reg_confirm",
+						"admin_reg_confirm"
 					);
 
 $order_types = array("ASC" => "ASC","DESC" => "DESC");
@@ -30,6 +35,7 @@ $order_types = array("ASC" => "ASC","DESC" => "DESC");
 $search_firstname = '%'.$odt_search.'%';
 $search_lastname = '%'.$odt_search.'%';
 $search_email = '%'.$odt_search.'%';
+$competitionRegID = '%'.$odt_search.'%';
 $search_phone = '%'.$odt_search.'%';
 $search_identity_card = '%'.$odt_search.'%';
 $search_team_name = '%'.$odt_search.'%';
@@ -57,7 +63,11 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 										competition_registration.born_date,
 										competition_registration.er_name,
 										competition_registration.er_phone,
-										competition_registration.t_shirt
+										competition_registration.t_shirt,
+										competition_registration.conf_email_sent,
+										competition_registration.lang,
+										competition_registration.reg_confirm,
+										competition_registration.city
 										FROM competition_registration
 										LEFT JOIN competition_team
 										ON competition_registration.invited_team_id = competition_team.id  
@@ -69,13 +79,14 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 												OR competition_registration.phone LIKE ? 
 												OR competition_registration.identity_card LIKE ?
 												OR competition_team.name LIKE ?
+												OR competition_registration.id LIKE ?
 												)
-										AND competition_registration.reg_confirm = '1' 
+										/* AND competition_registration.reg_confirm = '1' */
 										ORDER BY $orderby $order_type 
 										LIMIT ?,? 
 							 "))
 {
-	$stmt->bind_param("issssssii", 
+	$stmt->bind_param("isssssssii", 
 							$competitionID,
 							$search_firstname,
 							$search_lastname,
@@ -83,13 +94,14 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 							$search_phone,
 							$search_identity_card,
 							$search_team_name,
+							$competitionRegID,
 							$odt_start,
 							$odt_stop
 						);
 	
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($competitionRegID,$admin_reg_confirm,$team_name,$firstname,$lastname,$email,$phone,$indetity_card,$accepted_team_id,$team_id, $invited_team_id, $mother_name, $comp_dist, $sex, $born_date, $er_name, $er_phone, $t_shirt);
+	$stmt->bind_result($competitionRegID,$admin_reg_confirm,$team_name,$firstname,$lastname,$email,$phone,$indetity_card,$accepted_team_id,$team_id, $invited_team_id, $mother_name, $comp_dist, $sex, $born_date, $er_name, $er_phone, $t_shirt, $conf_email_sent, $lang, $reg_confirm, $city);
 	
 	
 
@@ -151,25 +163,48 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 		{
 			$sex = "nő";
 		}
+
+		if ($reg_confirm == "1") 
+		{
+			$reg_confirm = "igen";
+		}
+		else
+		{
+			$reg_confirm = "nem";
+		}
+
+		if ($conf_email_sent == 0) 
+		{
+			$conf_email_sent = "<button class='send_conf_competition_email_btn' comp_reg_id='".$competitionRegID."' competition_id='".$competitionID."' lang='".$lang."'>Elküld</button>";
+		}
+		else
+		{
+			$conf_email_sent = "Elküldve";
+		}
+
 		$str_length = 5;
 		$dataRaw = array(	
 							$team_name.($invited_team_id?($accepted_team_id?" - <span style='color:#a9bc87; font-weight:bold'>elfogadva</span>":" - <span style='color:#bfac70'>folyamatban</span>"):"Nincs csapatfelkérés"),
+							"<input type='checkbox' ".($checked=$admin_reg_confirm == '1'?'checked':'')." ".($disabled=$admin_reg_confirm == '1'?'disabled':'')." name='accepted' class='accepted' value='".$competitionRegID."'>",
+
 							substr(str_repeat(0, $str_length) . $competitionRegID, -$str_length),
-							$lastname,
-							$firstname,
+							$lastname." ".$firstname,
 							$born_date,
 							$mother_name,
 							$comp_dist,
 							$t_shirt,
-							$phone,
 							$email,
 							$sex,
+							$conf_email_sent,
+							$city,
 							$indetity_card,
+							$phone,
 							$er_name, 
-							$er_phone, 
-							
-							"<input type='checkbox' ".($checked=$admin_reg_confirm == '1'?'checked':'')." ".($disabled=$admin_reg_confirm == '1'?'disabled':'')." name='accepted' class='accepted' value='".$competitionRegID."'>",
-							$admin_reg_confirm == '1'?"<div class='delete-entry' competitionregid='".$competitionRegID."'>Visszavonás</div>":""
+							$er_phone,
+							$reg_confirm,
+							($admin_reg_confirm == '1')?'igen':'nem',			
+							($admin_reg_confirm == '1')?"<div class='delete-entry' competitionregid='".$competitionRegID."'>Visszavonás</div>":"",
+							($admin_reg_confirm == '1')?"Nem törölhető":"<img competitionregid='".$competitionRegID."' class='remove-entry' src='../img/common/recyclebin.png' alt='Törlés'>"
 						);
     	$data['row'][] = $dataRaw;
 	}

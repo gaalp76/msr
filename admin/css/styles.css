@@ -158,6 +158,13 @@ nav .tile-container .tile .caption
 	color:white;
 	text-align: center;
 	font-weight: bold;
+	padding: 5px 3px;
+}
+
+.remove-entry{
+	width:3vw;
+	cursor: pointer;
+	margin:auto;
 }
 
 #message{
@@ -243,6 +250,15 @@ main .news-search-list .news-item .author
 	text-align: right;
 }
 
+main #entry-table-container{
+	width: 100%;
+	overflow-x: scroll;
+}
+
+main #entry-numrows{
+	margin: 10px 0 10px 0;
+	font-weight: bold;
+}
 main .formContainer
 {
 	width: 50%;

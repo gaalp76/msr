@@ -11,7 +11,7 @@ class Config {
 	public $SALT = "SZMSZC553334411212";
 	public $DAY_REMAINING_TO_VALID = 30;
 	public $LOGIN_PROBE = 3;
-	public $BASE_URL = "/beta";
+	public $BASE_URL = "localhost/msr";
 	public $BUSS_NAME = "Honvéd Ezüst Nyíl Sportegyesület";
 
 	public $SUCCESS_REGISTRATION_SUBJECT = "Sikeres regisztráció";

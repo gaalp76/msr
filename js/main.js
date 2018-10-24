@@ -277,6 +277,10 @@ function get_content(menu,param,isHistory, target='main')
 					url = url + '&page=showUsersAdd';			
 				break;
 
+				case linked_to + 'UserRemove' + instanceOf:
+					url = url + '&page=showUserRemove';			
+				break;
+
 				case linked_to + 'UsersDelete' + instanceOf:
 					url = url + '&page=showUsersDelete';
 				break;
@@ -849,6 +853,12 @@ function load_content(url)
 							}
 						break;
 
+						case 'showUserRemove':
+							$('#logout-container').remove();						
+							$('nav').append(data.login_container);
+							$('#content').slideUp();
+						break;
+
 						case 'showUsersAdd':
 					
 							$('#login-container').slideUp();
@@ -872,6 +882,8 @@ function load_content(url)
 								//}
 
 							});
+
+							
 
 							jQuery.validator.addMethod('phone', function (phone, element) {
 									phone = phone.replace(/\s+/g, '');
@@ -991,6 +1003,7 @@ function load_content(url)
 											var data = $('#registration-form').serializeArray();
 											data.push({name: "action", value: "addCommonUser"});
 											get_content("UsersAdd",$.param(data),0);
+											$('#content').slideUp();
 										}
 									}
 								});
@@ -1038,6 +1051,29 @@ function load_content(url)
 									$('#registration-form').submit();
 								//}
 
+							});
+
+							$('#remove-btn').click(function(){
+
+								$.confirm({
+								title: 'Törlés',
+								boxWidth: '30%',
+								useBootstrap: false,
+								content: 'Biztosan törli magát a portálról? Törlés esetén az adatbázisból minden bejegyzését törölni fogjuk, beleértve a verseny nevezéseit is.',	
+								buttons: {
+									confirm: {
+										text: 'Igen',
+										action: function(){
+											
+											get_content("UserRemove","",0);
+										}
+									},
+									cancel: {
+										text: 'Mégsem',
+										
+									}
+								}
+								});
 							});
 
 							jQuery.validator.addMethod('phone', function (phone, element) {
@@ -1882,6 +1918,7 @@ $(document).ready(function(){
 		}
 		else
 		{
+			$('.tile').removeClass('selected');		
 			$('#content').fadeOut(800);
 			$(this).addClass("selected");
 			get_content($(this).attr('menu'),'',0);

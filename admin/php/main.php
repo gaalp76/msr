@@ -76,7 +76,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 		$_SESSION["linkedTo"] = $linkedTo;
 		$_SESSION["uploadRootFolderID"] = $uploadRootFolderID;
 		$_SESSION["instanceOf"] = $instanceOf;
-
+		
 		switch ($menu)
 		{	
 			case $linkedTo."Home".$instanceOf:
@@ -194,6 +194,22 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 							if(isset($_POST["competitionRegID"]))
 							{
 									$returnArray["message"] = $competition_entry ->  deleteEntry($_POST["competitionRegID"]);
+							}
+							break;
+						case 'remove':
+							if(isset($_POST["competitionRegID"]))
+							{
+									$returnArray["message"] = $competition_entry ->  removeEntry($_POST["competitionRegID"]);
+							}
+							break;
+						case 'send_conf_competition_email':	
+							if(isset($_POST["competitionRegID"]))
+							{
+									
+									$returnArray["message"] = $competition_entry ->  sendMailConfirmRegistration($_POST["competitionRegID"], 
+																												 $_POST["competitionID"],
+																												 1,
+																												 $_POST["lang"]);
 							}
 							break;
 					}

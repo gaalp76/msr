@@ -59,6 +59,7 @@ $.extend( $.validator.messages, {
 	failed_invalid_folder_name: "Hibás mappa/album megnevezés!",
 	failed_delete_files: "Az albumban/könyvtárban lévő fájlok törlése sikertelen!",
 	failed_delete_folder: "A album/könyvtár törlése sikertelen!",
+	failed_sending_email: "Az email küldése sikertelen!",
 
 	exist_email: "Az email cím már szerepel az adatbázisban!",
 	exist_username: "A felhasználónév  már szerepel az adatbázisban!",

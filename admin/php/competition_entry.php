@@ -541,6 +541,54 @@ class CompetitionEntry extends Config
 		else return -1;
 	}
 
+	public function sendMailConfirmRegistration($competitionRegID, $competitionID, $admin, $lang="hu" )
+	{
+		$where = "";
+
+		if ($competitionRegID != '*') $where = " WHERE id = ?";
+
+		if ($stmt = $this->db->prepare("SELECT concat(firstname, ' ',lastname ) as name, email FROM competition_registration".$where))
+		{
+			if ($competitionRegID != "*") $stmt->bind_param("i", $competitionRegID);
+			$stmt->execute();
+			$result = $stmt->get_result();
+			
+			if($result->num_rows) 
+			{
+				if ($stmtComp = $this->db->prepare("SELECT * FROM competition WHERE id = ?"))
+				{
+					$stmtComp->bind_param("i", $competitionID);
+					$stmtComp->execute();
+					$resultComp = $stmtComp->get_result();
+					$rowComp = $resultComp->fetch_assoc();
+				}
+				else return -1;
+				
+				while ( $rowCompReg = $result->fetch_assoc() ) 
+				{
+					//echo "http://".$this->BASE_URL."/php/confirm_comp_registration_mail_".$lang."_inc.php";
+					if ($admin)	include("../../php/confirm_comp_registration_mail_".$lang."_inc.php");
+					else include("confirm_comp_registration_mail_".$lang."_inc.php");
+
+					if ($this->sendMail($rowCompReg["email"], $subject, $message) ) 
+					{
+						if ($stmtConfMail = $this->db->prepare("UPDATE competition_registration SET conf_email_sent = ? WHERE id = ? "))
+						{
+							$today = date("Y-m-d H:i:s");
+							$stmtConfMail->bind_param("si", $today, $competitionRegID);
+							$stmtConfMail->execute();
+							return "sent_confirm_comp_reg_mail";
+						}
+						else return -1;
+					}	
+				} // end while
+				
+			}
+			
+		}
+		else return -1;			
+	}
+
 	public function sendMailTeamAdded($competitionRegID, $competitionID, $teamName, $teamID, $linkedTo, $lang="hu" )
 	{
 
@@ -699,7 +747,7 @@ class CompetitionEntry extends Config
 		return $html;
 	}
 
-	public function confirmCompRegistration($id )
+	public function confirmCompRegistration($id, $competitionID, $lang="hu")
 	{
 
 		if ($stmt = $this->db->prepare("UPDATE competition_registration SET reg_confirm = 1 WHERE id = ?"))
@@ -707,7 +755,11 @@ class CompetitionEntry extends Config
 			$stmt->bind_param("i", $id);
 			$stmt->execute();
 
-			if ($stmt->affected_rows > 0) return "success_reg_comp";
+			if ($stmt->affected_rows > 0)
+			{
+				$this->sendMailConfirmRegistration($id, $competitionID, 0, $lang);
+				return "success_reg_comp";	
+			} 
 			else return "failed_reg_comp";
 		}
 		else return -1;
@@ -795,6 +847,49 @@ class CompetitionEntry extends Config
 		}
 
 		if ($stmt = $this->db->prepare("UPDATE competition_registration SET admin_reg_confirm = '0' WHERE id = ?"))
+		{
+
+			$stmt->bind_param("i", $competitionRegID);
+			$stmt->execute();
+			
+		}
+		else return -1;
+
+		return 'success_delete';
+	}
+
+	public function removeEntry($competitionRegID)
+	{
+
+		if ($stmt = $this->db->prepare("SELECT firstname,lastname,admin_reg_confirm,email,lang FROM competition_registration WHERE id = ?"))
+		{
+			$stmt->bind_param("i", $competitionRegID);
+			$stmt->execute();
+			$result = $stmt->get_result();
+			$row = $result->fetch_assoc();
+			if($row["admin_reg_confirm"] == "1")
+			{
+				switch($row["lang"])
+				{
+					case "hu":
+						$subject = "Nevezés törlése";
+						$message = "<h1>Kedves ".$row["firstname"]." ".$row["lastname"]."! </h1>";
+						$message .= "<p>Nevezésed technikai okok miatt töröltük.</p>";
+						$message .= "<p>Üdvözlettel:</br>'.$this->BUSS_NAME.'</br> csapata</p>";
+					break ;
+					case "en":
+						$subject = "Nevezés törlése";
+						$message = "<h1>Kedves ".$row["firstname"]." ".$row["lastname"]."! </h1>";
+						$message .= "<p>Nevezésed technikai okok miatt töröltük.</p>";
+						$message .= "<p>Üdvözlettel:</br>'.$this->BUSS_NAME.'</br> csapata</p>";
+					break;
+				}
+
+				$this->sendMail($row["email"],$subject,$message);
+			}
+		}
+
+		if ($stmt = $this->db->prepare("DELETE FROM competition_registration WHERE id = ?"))
 		{
 
 			$stmt->bind_param("i", $competitionRegID);

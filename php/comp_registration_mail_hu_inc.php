@@ -19,7 +19,7 @@
 
 	$message .= '<p>A nevezés megerősítéséhez kérem kattintson az alábbi linkre:</p>';
 
-	$message .= '<p><a href="http://'.$this->BASE_URL.'/#ConfirmCompetitionRegistration&lang='.$lang.'&comp_reg_id='.$competitionRegID.'">Nevezés megerősítése.</a></p>';
+	$message .= '<p><a href="http://'.$this->BASE_URL.'/#ConfirmCompetitionRegistration&lang='.$lang.'&comp_reg_id='.$competitionRegID.'&competitionID='.$competitionID.'">Nevezés megerősítése.</a></p>';
 
 	$message .= '<p>A verseny időpontja: '.$rowComp['start_date'].'</p>';
 
@@ -29,5 +29,5 @@ SWIFT kód: TAKBHUHBXXX </b></p>';
 
 	$message .= '<p>Amennyiben nem Ön regisztrált, kérjük tekintse ezt a levelünket tárgytalannak.</p>';
 
-	$message .= '<p>Üdvözlettel:</br>'.$this->BUSS_NAME.'</br> csapata</p>';	
+	$message .= '<p>Üdvözlettel:<br>'.$this->BUSS_NAME.'<br> csapata</p>';	
 ?>

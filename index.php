@@ -14,7 +14,7 @@
 
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="gallery/css/unite-gallery.css"  />
 	<link rel='stylesheet' type='text/css' media="screen,projection" href='gallery/themes/video/skin-right-no-thumb.css' />
-	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/styles.css?v=1.1.2"  />
+	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/styles.css?v=1.1.4"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/jquery-ui.css"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/jquery-confirm.css"  />
 	<link href="https://fonts.googleapis.com/css?family=Rajdhani" rel="stylesheet">
@@ -22,7 +22,7 @@
 
 
 	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/main.js?v=1.1.1"></script>
+	<script src="js/main.js?v=1.1.2"></script>
 
 	<script src="js/jquery-ui.js"></script>
 

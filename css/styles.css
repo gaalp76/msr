@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Black+Ops+One');
+	@import url('https://fonts.googleapis.com/css?family=Black+Ops+One');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Didact+Gothic');
 html{
@@ -66,7 +66,7 @@ main{
 #content{
 	display: none;
 	position: absolute;
-	background-color: white;
+	background-color: #efefef;
 	opacity: 1;
 	width: 100%;
 	height: 100%;
@@ -135,7 +135,7 @@ main{
 	text-align: justify;
 }
 .sub-content, #sub-content, .gallery-container {
-	margin: 15px;
+	margin: 25px;
 }
 .document-container .documents{
 	font-size: 80%;
@@ -273,7 +273,7 @@ main{
 	overflow: none;
 	background-color: white;
 	height: 170px;
-	background: linear-gradient(to bottom right, #0c4252, #06242d);
+	background: linear-gradient(to bottom right, #b3243c, #35020b);
 	border:1px solid black;
 }
 
@@ -404,9 +404,12 @@ main{
 	font-family: 'Didact Gothic', sans-serif;/*'Black Ops One', cursive;*/
 	font-size: calc(0.4rem + 0.9vw);
 	line-height: 35px;
-	margin: auto 15px;
+	padding: 0 15px; 
 	cursor: pointer;
 	white-space: nowrap;
+}
+.tile-container .selected{
+	background-color: #fe6f04;
 }
 .tile-container .home, .tile-container .level-up{
 	background-repeat: no-repeat;
@@ -414,6 +417,7 @@ main{
 	background-position: -8px -5px;
 	width: 25px;
 	height: 40px;
+	margin-left: 15px;
 }
 .tile-container .home span, .tile-container .level-up span{
 	display: none;
@@ -639,6 +643,12 @@ form div{
 .blue2{
 	background-color: #bcd5e2;
 	border-color: #065f8d;
+	color: #fff;
+}
+
+.red{
+	background-color: #c43c3c;
+	border-color: #470202;
 	color: #fff;
 }
 
