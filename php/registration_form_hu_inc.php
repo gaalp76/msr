@@ -1,32 +1,29 @@
 <?php 
-$html  = '<div class="banner-image" style="background-image:url(img/registration-banner-1.jpg)"></div>';
+$html  = '<div><div class="banner-image" style="background-image:url(img/registration-banner-1.jpg)"></div>';
 
 if($isCompetitionRegister)
 {
 	$html .= '<div class="information" style="width:100%; padding:10px">';
-	$html .= 	'<h2>A nevezés lépései</h2>';
+	$html .= 	'<br><h2>A nevezés lépései</h2>';
 	$html .=  	'<ol>';
-	$html .= 	'<li>Töltse le és hozza magával a kitöltött <a href="../docs/felelossegi_nyilatkozat.docx">felelősségvállalási nyilatkozatot</a> a versenyre!</li>';
-	$html .= 	'<li>Regisztrált felhasználó esetén a lenti űrlap üres mezőit kell kitölteni.<br> Adatváltoztatás lehetséges az email cím kivételével.</li>';
+	$html .= 	'<li>A honlapon regisztrált felhasználó (jobb felső sarok) esetén a lenti űrlap üres mezőit kell kitölteni.<br>Adatváltoztatás lehetséges az email cím kivételével.</li>';
 	$html .= 	'<li>Nem regisztrált felhasználó esetén az összes mezőt ki kell tölteni.</li>';
-	$html .= 	'<li>Az adatok helyes kitöltése, valamint az adatvédelmi nyilatkozat elfogadása után a nevezés gombra kell kattintani.</li>';
+	$html .= 	'<li>Az adatok helyes kitöltése, valamint az adatvédelmi, felelősségvállalási nyilatkozat és a versenyszabályzat elfogadása után a nevezés gombra kell kattintani.</li>';
 	$html .= 	'<li>A megadott email címre kiküldünk egy levelet, melyben ellenőrizheti adatait, valamint a "Nevezés megerősítése" linkre kattintva véglegesítheti nevezési szándékát.</li>';
-	$html .= 	'<li>A következő lépésben az alábbi bankszámlaszámra kell elutalni a nevezési összeget. <b>A regisztrációs emailben kapott kódot kérjük az utalás közleményében feltüntetni szíveskedjen!</b><p><b>Fizetés átutalással, forintban a szervező Honvéd „Ezüst Nyíl” SE bankszámlaszámára<br> Nyugat Takarék Szövetkezet: 59800156-11021412<br>
-SWIFT kód: TAKBHUHBXXX </b></p>
-</li>';
+	$html .= 	'<li>A következő lépésben az emailben lévő bankszámlaszámra kell elutalni a nevezési összeget. <b>A regisztrációs emailben kapott kódot, a versenytávot, valamint ha váltóban induk a "valto" szót kérjük az utalás közleményében feltüntetni szíveskedjen! (pl. halfmarathon00001 10km valto</b></li>';
 	$html .= 	'<li>A szervezők a nevezés elfogadásáról a megadott email címen értesítik.</li>';
 	$html .= 	'<li>A nevezés elfogadásra került.</li>';
 	$html .=  	'</ol>';
-	$html .= 	'<h2>A csapat alakítás lépései</h2>';
+	$html .= 	'<h2>A csapat/váltó alakítás lépései</h2>';
 	$html .=  	'<ol>';
-	$html .= 	'<li>Csapatot csak <b>előre regisztrált felhasználó</b> hozhat létre</li>';
-	$html .= 	'<li>A csapatkapitány és a csapattagok a fenti lépések szerint neveznek a versenyre.</li>';
-	$html .= 	'<li>A csapatkapitány elkéri a csapattagok regisztrációs kódját.</li>';
-	$html .= 	'<li>A csapatkapitány a honlapon a nevezések menüpont alatt kitölti a csapatalakítás űrlapját.</li>';
-	$html .= 	'<li>A csapattagok emailt kapnak a csapattagi felkérésről.</li>';
-	$html .= 	'<li>A csapattagok az emailben a megadott linkre kattintva elfogadhatják a csapattagi felkérést.</li>';
-	$html .= 	'<li>Amennyiben minden csapattag megerősíttete részvételi szándékát a csapatban, a csapat megalakult.</li>';
-	$html .= 	'<li>A csapattagok 3x5 km-es váltóban indulhatnak.</li>';
+	$html .= 	'<li>Csapatot/váltót csak azután lehet létrehozni, miután egyéni nevezésüket jóváhagytuk.</li>';
+	$html .= 	'<li>Csapatot/váltót csak a honlapon <b>regisztrált felhasználó</b> hozhat létre (jobb felső sarok)</li>';
+	$html .= 	'<li>A csapatkapitány és a csapattagok/váltótagok a fenti lépések szerint neveznek a versenyre.</li>';
+	$html .= 	'<li>A csapatkapitány elkéri a csapattagok/váltótagok regisztrációs kódját.</li>';
+	$html .= 	'<li>A csapatkapitány a honlapon a nevezések menüpont alatt kitölti a csapat/váltó alakítás űrlapját.</li>';
+	$html .= 	'<li>A csapattagok/váltótagok emailt kapnak a csapattagi/váltótagi felkérésről.</li>';
+	$html .= 	'<li>A csapattagok/váltótagok az emailben a megadott linkre kattintva elfogadhatják a csapattagi/váltótagi felkérést.</li>';
+	$html .= 	'<li>Amennyiben minden csapattag/váltótag megerősíttete részvételi szándékát a csapatban/váltóban, a csapat/váltó megalakult.</li>';
 	$html .=  	'</ol>';
 	$html .=	'</div>';
 }
@@ -72,6 +69,7 @@ if($isCompetitionRegister && $CompetitionType == "military")
 {
 $html .= 		'<label for="pid">*Személyi igazolvány/útlevél szám:</label>';
 $html .= 		'<input type="text" name="pid" id="pid" value="'.$pid= ($userDataArray!="" ?  $userDataArray["id"] : "").'">';
+
 }
 if($isCompetitionRegister)
 {
@@ -80,7 +78,7 @@ if($isCompetitionRegister)
 	$html .= 		'<label for="er_phone">*Baleset esetén értesítendő telefonszáma:</label>';
 	$html .= 		'<input type="text" name="er_phone" id="er_phone" >';
 
-	$html .= 		'<label for="t_shirt">*Technikai póló mérete:</label>';
+	$html .= 		'<label for="t_shirt">*Póló mérete:</label>';
 	$html .= 		'<select name="t_shirt" id="t_shirt">';
 	$html .= 			'<option value="0" >Nem kérek</option>';
 	$html .= 			'<option value="1" >XS</option>';
@@ -124,14 +122,21 @@ $html .= 		'<label for="mailing-city">Település:</label>';
 $html .= 		'<input type="text" name="mailing-city" id="mailing-city" value="'.$email= ($userDataArray!="" ?  $userDataArray["city"] : "").'">';
 $html .= 		'<label for="mailing-address">Cím (utca, hsz.):</label>';
 $html .= 		'<input type="text" name="mailing-address" id="mailing-address" value="'.$email= ($userDataArray!="" ?  $userDataArray["address"] : "").'">';
+
+if($isCompetitionRegister && $CompetitionType == "military")
+{
+	$html .= 	'<label for="guest_number">Kísérők száma:</label>';
+	$html .= 	$this->getGuestComboBox();
+}
 $html .= 	'</div>';
+
 
 
 if($isCompetitionRegister)
 {
 
-	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf" target="_blank"> adatvédelmi-</a> valamint a <a href="../docs/verseny_szabalyzat.docx">verseny
-szabályzatot</a>.<input type="checkbox" name="accept_rules" id="accept_rules"></div>';
+	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf" target="_blank"> adatvédelmi-</a> valamint a <a href="../docs/versenyszabalyzat_felelossegvallalasi_nyilatkozat.pdf">verseny
+szabályzatot és felelősségvállalási nyilatkozatot</a>.<input type="checkbox" name="accept_rules" id="accept_rules"></div>';
 	$html .=	'<div class="btn-container">';
 	$html .= 		'<button id="sign-up-btn" type="button" class="blue2">Nevezek</a>';
 	$html .=	'</div>';
@@ -143,7 +148,7 @@ szabályzatot</a>. <input type="checkbox" name="accept_rules" id="accept_rules">
 	$html .=	'<div class="btn-container"><button id="sign-up-btn" type="button" class="blue2">'.$btnName = ($userDataArray!="" ?  "Mentés" : "Elküld").'</a></div>';
 }
 $html .= '</form>';
-
+$html .= '</div>';
 
 
 return $html;

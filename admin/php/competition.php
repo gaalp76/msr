@@ -33,12 +33,15 @@ class Competition extends Config
 			$html = "";
 			while ($row = $result->fetch_assoc()) 
 			{
-				$html = "";
+				
 				switch ($lang)
 				{
 					case "hu":
 						switch ($row["linked_to"])
 						{
+							case "halfmarathon":
+								$html .= "<p><b>Jánosházi félmaraton verseny nevezése megnyílt</b><br>";	
+							break;
 							case "vulcanrun":
 								$html .= "<p><b>VulcanRun-terepfutó verseny nevezése megnyílt</b><br>";	
 							break;
@@ -183,7 +186,13 @@ class Competition extends Config
 																	reg_start_date = ?,
 																	reg_end_date = ?,
 																	max_reg_number = ?,
-																	reg_type = ?					
+																	reg_type = ?,
+																	teamate_number = ?,
+																	comp_dist_1 = ?,
+																	comp_dist_2 = ?,
+																	comp_dist_3 = ?
+
+
 										WHERE id = ?
 										"))
 		{

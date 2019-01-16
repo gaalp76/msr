@@ -8,6 +8,7 @@ class Config {
 	public $MAIL_USERNAME = "gaalp";
 	public $MAIL_PASSWORD = "VasCsigaPok";
 	public $MAIL_SMTP = "mail.cellkabel.hu";
+        public $MAX_GUEST_NB = 5;
 	public $SALT = "SZMSZC553334411212";
 	public $DAY_REMAINING_TO_VALID = 30;
 	public $LOGIN_PROBE = 3;
@@ -31,7 +32,7 @@ class Config {
     public $MAX_FILE_SIZE = 10;		// file size in MB
 
     public $LINKED_TO_DEFAULT = "main";
-    public $LANG_DEFAULT;
+    public $LANG_DEFAULT = "hu";
     public $LANGUAGE = array("hu"=>"Magyar","en"=>"Angol","de"=>"Német"); 
 
     public function __construct() {

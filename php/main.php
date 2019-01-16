@@ -16,6 +16,7 @@ require_once "../admin/php/colleague.php";
 require_once "../admin/php/basic_timestate_editor.php";
 require_once "../admin/php/aboutus.php";
 require_once "../admin/php/rules.php";
+require_once "../admin/php/donation.php";
 require_once "../admin/php/contacts.php";
 require_once "../admin/php/story.php";
 require_once "../admin/php/competition_obstacles.php";
@@ -103,7 +104,8 @@ switch ($menu)
 		$returnArray["content"] = $user->getUserMenu($_SESSION["lang"]);
 		//if (isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1) $returnArray["login_container"] = $user->getLogoutButton();
 		//else 
-			$returnArray["login_container"] = $user->getUserLoginForm($_SESSION["lang"]);
+
+		$returnArray["login_container"] = $user->getUserLoginForm($_SESSION["lang"]);
 	break;
 
 	case $linkedTo."ForgotPassword".$instanceOf:
@@ -282,8 +284,8 @@ switch ($menu)
 			case $linkedTo."NewsSearch".$instanceOf:
 				$news = new News($db);
 				$returnArray["news_search_form"] 	= $news -> getNewsSearchForm($linkedTo,1);
-				$returnArray["content"] = "<div class='banner-image news-banner'></div>";
-				$returnArray["content"] .= "<div class='sub-content'>";
+				$returnArray["banner"] = "news-banner";
+				
 				if(isset($_GET["action"]) && $_GET["action"] == "showNewsResult")
 				{
 
@@ -305,7 +307,7 @@ switch ($menu)
 				}
 				else
 				{
-					$returnArray["content"] .= $news->getNewsSearchResult(	
+					$returnArray["content"] = $news->getNewsSearchResult(	
 																		"", 
 																		"", 
 																		date("Y-m-d", strtotime("-6 months")), 
@@ -316,7 +318,6 @@ switch ($menu)
 																		$_SESSION["lang"]
 																	);
 				}	
-				$returnArray["content"] .= "</div>";
 			break;
 
 
@@ -326,10 +327,8 @@ switch ($menu)
 
 	case $linkedTo."Documents".$instanceOf:
 				$uploadManagerObj = new UploadManager($db);
-				$returnArray["content"] = "<div class='banner-image documents-banner'></div>";
-				$returnArray["content"] .= "<div class='sub-content'>";
-				$returnArray["content"] .= $uploadManagerObj -> getDocumentAttachments($linkedTo,"%","%",$_SESSION["lang"]);
-				$returnArray["content"] .= "</div>";
+				$returnArray["banner"] = "documents-banner";
+				$returnArray["content"] = $uploadManagerObj -> getDocumentAttachments($linkedTo,"%","%",$_SESSION["lang"]);
 			break;
 
 
@@ -363,6 +362,7 @@ switch ($menu)
 	case $linkedTo."Contacts".$instanceOf:
 		
 		$contacts = new Contacts($db, "contacts", "contacts_language", "contacts_id");
+		$returnArray["banner"] = "contacts-banner";
 		$uploadManagerObj = new UploadManager($db);
 		$x=$contacts->getBasicTimeStateEditor($linkedTo);
 		if ($contacts->getBasicTimeStateEditor($linkedTo) == -1 )
@@ -376,6 +376,32 @@ switch ($menu)
 			$returnArray["content"] = $response[$_SESSION["lang"]];
 			$returnArray["document"] = $uploadManagerObj -> getDocumentAttachments($linkedTo, "Of".$menu,"%", $_SESSION["lang"]);
 		}
+
+	break;
+
+
+	// ******************************************************************************
+	// *                             Támogatók menü                                 *
+	// ******************************************************************************
+
+	case $linkedTo."Donation".$instanceOf:
+		
+		$donation = new Donation($db, "donation", "donation_language", "donation_id");
+		//$returnArray["banner"] = "donation-banner";
+		$uploadManagerObj = new UploadManager($db);
+		$x=$donation->getBasicTimeStateEditor($linkedTo);
+		if ($donation->getBasicTimeStateEditor($linkedTo) == -1 )
+		{ 
+			$returnArray['message'] = "failed_database";
+			$returnArray["content"] = "";
+		}
+		else 
+		{
+			$response = $donation->getBasicTimeStateEditor($linkedTo);
+			$returnArray["content"] = $response[$_SESSION["lang"]];
+			$returnArray["document"] = $uploadManagerObj -> getDocumentAttachments($linkedTo, "Of".$menu,"%", $_SESSION["lang"]);
+		}
+
 	break;
 
 // ******************************************************************************
@@ -570,7 +596,7 @@ switch ($menu)
 					$competitionRegID = $competition_entry -> getCompetitionRegID($_SESSION["userID"],$_GET["competition_id"]);
 					if(isset($_SESSION["userID"]) && $competitionRegID)
 					{
-					$returnArray["message"] = $competition_entry -> sendMailRegistration($competitionRegID,$_GET["competition_id"],$_SESSION["lang"] );
+					$returnArray["message"] = $competition_entry -> sendMailRegistration($competitionRegID,$_GET["competition_id"],0,$_SESSION["lang"] );
 					}
 				break;
 				
@@ -595,6 +621,7 @@ switch ($menu)
 																					$_GET["er_phone"],
 																					$_GET["t_shirt"],
 																					$_GET["comp_dist"],
+																					isset($_GET["guest_data"])?$_GET["guest_data"]:"",
 																					$linkedTo,
 																					$_SESSION["lang"]
 																				);

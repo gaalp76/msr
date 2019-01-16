@@ -8,6 +8,7 @@
 	public function registrationIsFullText($lang)
 	public function registrationInActiveText($lang)
 	public function getCompetitionType($competitionID)
+	public function addGuests($guestData,$competitionRegistrationID)
 	public function addEntry($competitionID, $lastname, $firstname, $email, $phone, $country, $zip, $city, $address, $pid = "", $linkedTo = "", 							 $lang ="hu")
 	public function addTeam($competitionID,	$teamName, $teamates_array, $teamLeaderID, $lang ="hu")
 	private function sendMail($address, $subject, $message)
@@ -115,8 +116,8 @@ class CompetitionEntry extends Config
 
 	public function registrationInActiveText($lang)
 	{
-		$registrationInActiveLang = array("hu" => "Nincs nevezési időszak.",
-										  "en" => "Not active registration term.");
+		$registrationInActiveLang = array("hu" => "Jelenleg nincs nevezési időszak.",
+										  "en" => "There is not active registration period.");
 		$html = "<div class='registration-not-active-container'>";
 		$html .= $registrationInActiveLang[$lang];
 		$html .= "</div>";
@@ -137,6 +138,66 @@ class CompetitionEntry extends Config
 		else return -1;
 	}
 
+	public function addGuests($guestData,$competitionRegistrationID,$competitionID)
+	{
+		
+
+		foreach ($guestData as $data)
+    	{
+
+			if ( $stmt = $this->db->prepare("INSERT INTO competition_guest_registration (
+																comp_reg_id,
+																competition_id,
+																email,
+																lastname,
+																firstname,
+																bornname,
+																mothername,
+																borndate,
+																sex,
+																nationality,
+																pid,
+																pid_type,
+																phone,
+																auto,
+																zip,
+																city,
+																address,
+																er_name,
+																er_phone
+																)
+													VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)") )
+			
+			{
+
+				$stmt->bind_param("iissssssissssssssss", 
+												$competitionRegistrationID,
+												$competitionID,	
+												$data["email"],
+												$data["lastname"],
+												$data["firstname"],
+												$data["bornname"],
+												$data["mothername"],
+												$data["borndate"],
+												$data["gender"],
+												$data["nationality"],
+												$data["pid"],
+												$data["pid_type"],
+												$data["phone"],
+												$data["auto_data"],
+												$data["zip"],
+												$data["city"],
+												$data["address"],
+												$data["er_name"],
+												$data["er_phone"]
+									);
+				$stmt->execute();
+				
+			}		
+			else return "failed_database";
+			
+		}
+	}
 	
 
 	public function addEntry(	
@@ -157,13 +218,16 @@ class CompetitionEntry extends Config
 								$er_phone,
 								$t_shirt,
 								$comp_dist = 0,
+								$guest_data,
 								$linkedTo = "",
 								$lang ="hu"
 
 							)
 	{		
+
 		if ($stmt = $this->db->prepare("SELECT id FROM competition_registration WHERE email = ? AND competition_id=?"))
 		{
+
 			$stmt->bind_param("si", $email, $competitionID);
 			$stmt->execute();
 			$result = $stmt->get_result();
@@ -175,6 +239,7 @@ class CompetitionEntry extends Config
 			}
 			else 
 			{
+
 				if ( $stmt = $this->db->prepare("INSERT INTO competition_registration (
 															competition_id,
 															lastname,
@@ -224,14 +289,31 @@ class CompetitionEntry extends Config
 
 					if ($stmt->affected_rows > 0)
 					{
-						$this->sendMailRegistration($stmt->insert_id, $competitionID, $lang );
-						return "success_register";
+
+						if(is_array($guest_data)) 
+						{
+							$this -> addGuests($guest_data, $stmt->insert_id, $competitionID);
+						}
+
+						switch ($this->sendMailRegistration($stmt->insert_id, $competitionID, 0, $lang ))
+						{
+							case 0: 
+								return "failed_email_sent";
+							break;
+							case -1:
+								return "failed_database";
+							break;
+							case 1:
+								return "success_register";
+							break;
+					
+						}		
 					}
 				}
-				else return -1;	
-			} return -2;
+				else return "failed_database";
+			}
 		}
-		else return -1;
+		else return "failed_database";
 
 		
 		
@@ -495,12 +577,13 @@ class CompetitionEntry extends Config
 		}
 		catch (Exception $e) 
 		{		
-			echo 'failed_mail'.$e;
+			//echo 'failed_mail'.$e;
+
 			return 0;
 		}
 	}
 
-	public function sendMailRegistration($competitionRegID, $competitionID, $lang="hu" )
+	public function sendMailRegistration($competitionRegID, $competitionID, $admin="", $lang="hu" )
 	{
 
 		if ($stmt = $this->db->prepare("SELECT concat(firstname, ' ',lastname ) as name, email FROM competition_registration WHERE id = ?"))
@@ -522,7 +605,10 @@ class CompetitionEntry extends Config
 				}
 				else return -1;
 
-				include("comp_registration_mail_".$lang."_inc.php");
+				//include("comp_registration_mail_".$lang."_inc.php");
+				if ($admin)	include("../../php/comp_registration_mail_".$lang."_inc.php");
+				else include("comp_registration_mail_".$lang."_inc.php");
+
 				if ($this->sendMail($rowCompReg["email"], $subject, $message) ) 
 				{
 					if ($stmt = $this->db->prepare("UPDATE competition_registration SET email_sent = ? WHERE id = ? "))
@@ -530,10 +616,11 @@ class CompetitionEntry extends Config
 						$today = date("Y-m-d H:i:s");
 						$stmt->bind_param("si", $today, $competitionRegID);
 						$stmt->execute();
-						return "reg_mail_sent";	
+						return "success_send_comp_reg_mail";	
 					}
 					else return -1;
 				}
+				else return 0;
 				
 			}
 			
@@ -545,9 +632,23 @@ class CompetitionEntry extends Config
 	{
 		$where = "";
 
+		if ($distance_stmt =  $this->db->prepare("SELECT 	distance.name AS distance_name	FROM 
+										competition_registration INNER JOIN distance
+										ON competition_registration.comp_dist = distance.id
+										WHERE competition_registration.id = ?
+									"))
+		{
+			$distance_stmt->bind_param("i",$competitionRegID);
+			$distance_stmt->execute();
+			$distance_result = $distance_stmt->get_result();
+			$distance_row = $distance_result->fetch_assoc();
+			$comp_dist = $distance_row["distance_name"] ;	
+		}
+		else return -1;
+	
 		if ($competitionRegID != '*') $where = " WHERE id = ?";
 
-		if ($stmt = $this->db->prepare("SELECT concat(firstname, ' ',lastname ) as name, email FROM competition_registration".$where))
+		if ($stmt = $this->db->prepare("SELECT id, concat(firstname, ' ',lastname ) as name, email FROM competition_registration".$where))
 		{
 			if ($competitionRegID != "*") $stmt->bind_param("i", $competitionRegID);
 			$stmt->execute();
@@ -566,6 +667,7 @@ class CompetitionEntry extends Config
 				
 				while ( $rowCompReg = $result->fetch_assoc() ) 
 				{
+
 					//echo "http://".$this->BASE_URL."/php/confirm_comp_registration_mail_".$lang."_inc.php";
 					if ($admin)	include("../../php/confirm_comp_registration_mail_".$lang."_inc.php");
 					else include("confirm_comp_registration_mail_".$lang."_inc.php");
@@ -755,12 +857,12 @@ class CompetitionEntry extends Config
 			$stmt->bind_param("i", $id);
 			$stmt->execute();
 
-			if ($stmt->affected_rows > 0)
-			{
+			//if ($stmt->affected_rows > 0)
+			//{
 				$this->sendMailConfirmRegistration($id, $competitionID, 0, $lang);
 				return "success_reg_comp";	
-			} 
-			else return "failed_reg_comp";
+			//} 
+			//else return "failed_reg_comp";
 		}
 		else return -1;
 
@@ -831,7 +933,17 @@ class CompetitionEntry extends Config
 					case "hu":
 						$subject = "Nevezés törlése";
 						$message = "<h1>Kedves ".$row["firstname"]." ".$row["lastname"]."! </h1>";
-						$message .= "<p>Nevezésed technikai okok miatt töröltük.</p>";
+						$message .= "<p>Nevezésed töröltük, melynek lehetséges okai a következők:</p>";
+						$message .= "<ul>";
+						$message .= "<li>Nevezését regisztrációja után 5 nappal sem erősített meg.</li>";
+						$message .= "<li>Utalása bankszámlaszámunkra 5 nap elteltével nem érkezett meg.</li>";
+						$message .= "<li>A versenyszervezők nem járultak hozzá nevezéséhez.</li>";
+						
+						if($row["linked_to"] == "msr")
+						{
+							$message .= "<li>A Magyar Honvédség nem járult hozzá MH Pápa Bázisrepülőtér területére történő belépéséhez.</li>";
+						}
+						$message .= "</ul>";
 						$message .= "<p>Üdvözlettel:</br>'.$this->BUSS_NAME.'</br> csapata</p>";
 					break ;
 					case "en":
@@ -867,14 +979,24 @@ class CompetitionEntry extends Config
 			$stmt->execute();
 			$result = $stmt->get_result();
 			$row = $result->fetch_assoc();
-			if($row["admin_reg_confirm"] == "1")
-			{
+			//if($row["admin_reg_confirm"] == "1")
+			//{
 				switch($row["lang"])
 				{
 					case "hu":
 						$subject = "Nevezés törlése";
 						$message = "<h1>Kedves ".$row["firstname"]." ".$row["lastname"]."! </h1>";
-						$message .= "<p>Nevezésed technikai okok miatt töröltük.</p>";
+						$message .= "<p>Nevezésed töröltük, melynek lehetséges okai a következők:</p>";
+						$message .= "<ul>";
+						$message .= "<li>Nevezését regisztrációja után 5 nappal sem erősített meg.</li>";
+						$message .= "<li>Utalása bankszámlaszámunkra 5 nap elteltével nem érkezett meg.</li>";
+						$message .= "<li>A versenyszervezők nem járultak hozzá nevezéséhez.</li>";
+
+						if($row["linked_to"] == "msr")
+						{
+							$message .= "<li>A Magyar Honvédség nem járult hozzá MH Pápa Bázisrepülőtér területére történő belépéséhez.</li>";
+						}
+						$message .= "</ul>";
 						$message .= "<p>Üdvözlettel:</br>'.$this->BUSS_NAME.'</br> csapata</p>";
 					break ;
 					case "en":
@@ -886,7 +1008,7 @@ class CompetitionEntry extends Config
 				}
 
 				$this->sendMail($row["email"],$subject,$message);
-			}
+			//}
 		}
 
 		if ($stmt = $this->db->prepare("DELETE FROM competition_registration WHERE id = ?"))

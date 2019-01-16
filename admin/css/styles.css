@@ -250,15 +250,42 @@ main .news-search-list .news-item .author
 	text-align: right;
 }
 
-main #entry-table-container{
+main #entry-table-container, main #guest-table-container{
 	width: 100%;
+	height:500px;
 	overflow-x: scroll;
+}
+
+main #guest-table-container{
+	display: none;
+	margin-top:10px;
+}
+
+main .entry-table th .odt-col, main .entry-guest-table th .odt-col{
+	color:white 	;
+	margin-top:20px; 
+}
+
+main .entry-table th, main .entry-guest-table th{
+	background-color: #d17506;
+}
+
+main .entry-table td, main .entry-guest-table td{
+	white-space: nowrap;
 }
 
 main #entry-numrows{
 	margin: 10px 0 10px 0;
 	font-weight: bold;
 }
+
+main #entry-numrows .accepted{
+	background-color:#5CB85C; 
+	color:#FFF;
+	padding:5px;
+	border-radius:5px; 
+}
+
 main .formContainer
 {
 	width: 50%;
@@ -479,7 +506,100 @@ footer
 	margin-top: 20px;
 }
 
+/******* mailbox *********/
 
+#mailboxContainer{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#mailboxContainer #mailboxMailTextEditor #mailboxTabs  {
+	height: 522px;
+}
+.mailboxSubjectContainer{
+	width: 100%;
+	margin: 10px 0;
+}
+.mailboxSubjectContainer input{
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	line-height: 27px;
+	padding: 3px;
+}
+#mailboxAddresses{
+	width: 30%;
+	min-width: 200px;
+	float: left;
+	border: 1px solid #c5c5c5; 
+	border-radius: 3px; 
+}
+
+#mailboxMailTextEditor{
+	width: 70%;
+	float: right;
+}
+
+#mailboxAddressHeader{
+	width: 100%;
+	height: 30px;
+	background-color: #fe9900;
+	text-align: center;
+	font-weight: bold;
+	font-size: 18px;
+	color: black;
+}
+
+#mailboxAdressToolbar{
+	width: 100%;
+	background-color: #eee;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 30px;
+}
+#mailboxAdressToolbar span{
+	display: inline-block;
+	cursor: pointer;
+	line-height: 30px;
+	margin-right: 15px;
+}
+
+
+#mailboxSearchBar{
+	width: 100%;
+	height: 30px;
+}
+
+#mailboxAddressContainer{
+	width: 100%;
+	height: 100%;
+	overflow: scroll;
+    font-size: calc(0.8rem + 0.3vw);
+    height: 430px;
+}
+
+#mailboxAddressContainer table{
+	width: 100%;
+}
+#addressSearchField{
+	width: 100%;
+	height: 25px;
+}
+
+.regConfirmed{
+	background-color: #a7dbfd;
+}
+
+.adminConfirmed{
+	background-color: #82f982;
+}
+.regOutOfDate{
+	background-color: #fbafaf;
+}
+.regUnpayed{
+	background-color: sandybrown;	
+}
 
 
 @media (max-width:600px){
@@ -507,6 +627,13 @@ footer
 	}
 }
 
+@media (max-width:703px)
+{
+	#mailboxAddresses, #mailboxMailTextEditor{
+		width: 100%;
+	}
+}
+
 @media (max-width:992px) and (min-width:601px)
 {
 	main .formContainer
@@ -517,8 +644,7 @@ footer
 	nav .tile-container .tile
 	{
 		margin:0px;
-
-
 	}
+
 }
 

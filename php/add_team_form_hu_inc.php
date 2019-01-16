@@ -40,7 +40,7 @@
 
 	$str_length = 5;			
 	$html .= 	'<label for="teamleader">Csapatkapitány regisztrációs kódja:</label>';
-	$html .= 	'<input type="text" name="teamates[]" id="teamleader" value="'.substr(str_repeat(0, $str_length) . $competitionRegID, -$str_length).'" >';
+	$html .= 	'<input type="text" name="teamates[]" readonly id="teamleader" value="'.substr(str_repeat(0, $str_length) . $competitionRegID, -$str_length).'" >';
 
 	$teamateNum = $competition_entry->getTeamMembersCount($competitionID);
 	$i = 0;

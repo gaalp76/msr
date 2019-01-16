@@ -25,6 +25,7 @@ $(window).bind('popstate', function(e) {
 	}
 });
 
+
 function initPage()
 {
 	$.post("php/main.php",{ menu:"login" }, function(data) {
@@ -215,8 +216,32 @@ function get_content(menu,param,isHistory)
 					url = url + '&page=showHome';
 				break;
 
+				case linked_to + 'UsersAuthority' + instanceOf:	
+					url = url + '&page=showUsersAuthority';
+				break;
+
 				case linked_to + 'Msr' + instanceOf:	
 					url = url + '&page=showMsr';
+				break;
+
+				case linked_to + 'Vulcanrun' + instanceOf:	
+					url = url + '&page=showVulcanrun';
+				break;
+
+				case linked_to + 'VulcanObstacle' + instanceOf:	
+					url = url + '&page=showVulcanObstacle';
+				break;
+
+				case linked_to + 'Vulcanrun' + instanceOf:	
+					url = url + '&page=showVulcanrun';
+				break;
+
+				case linked_to + 'Sr' + instanceOf:	
+					url = url + '&page=showSr';
+				break;
+
+				case linked_to + 'HalfMarathon' + instanceOf:	
+									url = url + '&page=showHalfMarathon';
 				break;
 
 				case linked_to + 'Users' + instanceOf:
@@ -235,12 +260,18 @@ function get_content(menu,param,isHistory)
 					url = url + '&page=showUsersEdit';
 				break;
 
-				case linked_to + 'UsersAuthority' + instanceOf:
-					url = url + '&page=showUsersAuthority';
+				
+
+				case linked_to + 'AboutUsMain' + instanceOf:
+					url = url + '&page=showAboutUsMain';
 				break;
+
 	// ******************************************************************************
 	// *                             Versenykezelés                                 *
 	// ******************************************************************************
+				case linked_to + 'Competitions' + instanceOf:
+					$('main').html("");
+				break;
 				case linked_to + 'Entry' + instanceOf:
 					url = url + '&page=showEntry';
 				break;
@@ -285,8 +316,7 @@ function get_content(menu,param,isHistory)
 						});
 					
 					return;
-				break;
-				
+				break;				
 
 
 	// ******************************************************************************
@@ -624,7 +654,6 @@ function get_content(menu,param,isHistory)
 
 					if($('#contactsEditorTabs').length)
 					{
-
 						var data = [];
 						data.push({name: "document_linked_to", value: $("#documentForm").attr("linked_to")});
 						data.push({name: "document_instance_of", value: $("#documentForm").attr("instance_of")});
@@ -633,6 +662,7 @@ function get_content(menu,param,isHistory)
 						{
 							var lang = name.substr(name.indexOf('-') + 1);
 							data.push({name: "contacts_content[" + lang + "]", value: CKEDITOR.instances[name].getData()});
+							console.log(CKEDITOR.instances[name].getData());
 						}
 											
 
@@ -680,6 +710,78 @@ function get_content(menu,param,isHistory)
 				case linked_to + 'ContactsDeleteConfirmed' + instanceOf:
 					menu =  linked_to + 'ContactsDelete' + instanceOf;
 					url = url + '&page=showContacts';
+				break;
+
+	// ******************************************************************************
+	// *                             Támogatók menü                                 *
+	// ******************************************************************************
+
+
+				case linked_to + 'DonationWrite' + instanceOf:
+				case linked_to + 'Donation' + instanceOf:
+					url = url + '&page=showDonation';
+				break;
+
+				case linked_to + 'DonationSaveBtn' + instanceOf:
+
+					if($('#donationEditorTabs').length)
+					{
+
+						var data = [];
+						data.push({name: "document_linked_to", value: $("#documentForm").attr("linked_to")});
+						data.push({name: "document_instance_of", value: $("#documentForm").attr("instance_of")});
+						
+						for(name in CKEDITOR.instances)
+						{
+							var lang = name.substr(name.indexOf('-') + 1);
+							data.push({name: "donation_content[" + lang + "]", value: CKEDITOR.instances[name].getData()});
+						}
+											
+
+						$("#documentForm .document_attachment:checked").each(function(){
+						    data.push({name: "file_id[]", value: $(this).attr('file_id')});
+						});
+
+						url += '&page=showDonation';
+						param += '&'+$.param(data);
+					}
+					else
+					{
+						menu =  linked_to + 'Donation' + instanceOf;
+						url = url + '&page=showDonation';
+					}
+				break;
+
+				case linked_to + 'DonationDelete' + instanceOf:
+					if($("#time-combobox").length && $("#time-combobox").val() != '-1')
+					{
+						$.confirm({
+								title: 'Törlés',
+								boxWidth: '30%',
+								useBootstrap: false,
+								content: 'Biztosan törli a bejegyzést?',	
+								buttons: {
+									confirm: {
+										text: 'Igen',
+										action: function(){
+											var data = [];
+											data.push({name: "Donation_id", value: $("#time-combobox").val()});
+											get_content(linked_to + 'DonationDeleteConfirmed' + instanceOf,$.param(data),1);
+										}
+									},
+									cancel: {
+										text: 'Mégsem',
+										
+									}
+								}
+							});
+					} else showMessage('empty_selected_in_list');
+					return;
+				break;
+
+				case linked_to + 'DonationDeleteConfirmed' + instanceOf:
+					menu =  linked_to + 'DonationDelete' + instanceOf;
+					url = url + '&page=showDonation';
 				break;
 
 	// ******************************************************************************
@@ -793,8 +895,8 @@ function get_content(menu,param,isHistory)
 					}
 					else
 					{
-						menu =  linked_to + 'CompetitionObstacles' + instanceOf;
-						url = url + '&page=showCompetitionObstacles';
+						showMessage('empty_competition_assign');
+						return ;
 					}
 				break;
 
@@ -866,8 +968,8 @@ function get_content(menu,param,isHistory)
 					}
 					else
 					{
-						menu =  linked_to + 'CompetitionFieldDescription' + instanceOf;
-						url = url + '&page=showCompetitionFieldDescription';
+						showMessage('empty_competition_assign');
+						return ;
 					}
 				break;
 
@@ -939,7 +1041,7 @@ function get_content(menu,param,isHistory)
 					}
 					else
 					{
-						showMessage('empty_selected_in_list');
+						showMessage('empty_competition_assign');
 						return ;
 						
 					}
@@ -1013,8 +1115,8 @@ function get_content(menu,param,isHistory)
 					}
 					else
 					{
-						menu =  linked_to + 'CompetitionInfo' + instanceOf;
-						url = url + '&page=showCompetitionInfo';
+						showMessage('empty_competition_assign');
+						return;
 					}
 				break;
 
@@ -1086,8 +1188,8 @@ function get_content(menu,param,isHistory)
 					}
 					else
 					{
-						menu =  linked_to + 'CompetitionApproach' + instanceOf;
-						url = url + '&page=showCompetitionApproach';
+						showMessage('empty_competition_assign');
+						return ;
 					}
 				break;
 
@@ -1203,6 +1305,71 @@ function get_content(menu,param,isHistory)
 					menu = linked_to + 'FileDeleteBtn' + instanceOf;
 					url = url + '&page=showUploadManagerDeleteFiles';
 				break;
+
+	// ******************************************************************************
+	// *                             Email küldés                                   *
+	// ******************************************************************************
+
+				case linked_to + 'Email'+ instanceOf:
+					url += '&page=showEmail';
+					
+				break;
+
+				case linked_to + 'SendMailBtn'+ instanceOf:
+
+					if($('#mailboxTabs').length && $('#competition-combobox').val()!='0' && $('#tableAdresses').find("input[type=checkbox]").is(":checked") )
+					{
+                                                         
+                                                         $.confirm({
+								title: 'Törlés',
+								boxWidth: '30%',
+								useBootstrap: false,
+								content: 'Biztosan elküldi az email(ke)t?',	
+								buttons: {
+									confirm: {
+										text: 'Igen',
+										action: function(){
+						var data = [];
+						data.push({name: "competitionID", value: $('#competition-combobox').val()});
+						
+						for(name in CKEDITOR.instances)
+						{
+							var lang = name.substr(name.indexOf('-') + 1);
+							data.push({name: "email_text[" + lang + "]", value: CKEDITOR.instances[name].getData()});
+						}
+										
+						$("#tableAdresses tr").each(function(){
+							if ($(this).find("input[type=checkbox]").prop("checked"))
+						    	data.push({name: "compregID[]", value:  $(this).find("input[type=checkbox]").val()});
+						});
+
+						$(".subject").each(function(){
+							var lang = $(this).attr('id').substr($(this).attr('id').indexOf('-') + 1);
+						    data.push({name: "subject["+lang+"]", value:  $(this).val()});
+						});
+						
+
+						//url += '&page=showEmail';
+						param += '&'+$.param(data);
+                                                get_content(linked_to + 'SendMailConfirmed' + instanceOf,$.param(data),1);
+										}
+									},
+									cancel: {
+										text: 'Mégsem'
+										
+									}
+								}
+							});
+					}
+					else return;
+					
+					
+				break;
+
+                                case linked_to + 'SendMailConfirmed' + instanceOf:
+					menu = linked_to + 'SendMailBtn' + instanceOf;
+					url = url + '&page=showEmail';
+				break;
 				default:			
 					
 				break;
@@ -1226,7 +1393,6 @@ function get_content(menu,param,isHistory)
 		
 		history.pushState({ url: url },'','#' + menu);
 	}
-
 	load_content(url);
 	return false;
 }
@@ -1261,10 +1427,12 @@ function load_content(url)
 			if(data.message) { showMessage(data.message, data.ontop); }
 			if(data.ontop) { goTop(); }
 
+			/*
 			for(name in CKEDITOR.instances)
 			{
 			    CKEDITOR.instances[name].destroy(true);
 			}
+			*/
 
 			switch (target) //target switching
 			{
@@ -1283,8 +1451,13 @@ function load_content(url)
 							$('main').html(data);
 						break;
 
+						case 'showSr':
+						case 'showVulcanObstacle':
+						case 'showVulcanrun':
+						case 'showHalfMarathon':
+						case 'showAboutUsMain':
 						case 'showMsr':
-							$('main').html(data);
+							$('main').html(data.content);
 						break;
 
 						case 'showUsersInfo':
@@ -2111,6 +2284,71 @@ function load_content(url)
 							}
 						break;
 
+						case 'showDonation':
+							if (!data.donation_combobox.length) return;
+							$('main').empty();
+
+							if (!$('#time-combobox').length) 
+							{
+								$('main').append("<div id='time-combobox-container'></div>");
+								$('#time-combobox-container').html(data.donation_combobox);
+
+							}
+							else
+							{
+								$('#time-combobox-container').html(data.donation_combobox);
+							}
+
+							$("#time-combobox").change(function(e){
+									get_content(linked_to + "DonationSaveBtn" + instanceOf,"action=set_other&donation_id=" + $("option:selected", this).val(),1);	
+									e.preventDefault();
+								});
+
+							if(!$('#donationEditorTabs').length)
+							{
+								var $donationEditorTabs = $('<div>', {'id': 'donationEditorTabs'});
+								$('main').append($donationEditorTabs);
+								var tabTitle = "<ul>";
+								$.each(data.languages, function(key, name){
+									tabTitle += "<li><a href='#" + key + "'>" + name + "</a></li>";
+								});
+								tabTitle += "</ul>";
+								$donationEditorTabs.append(tabTitle);
+
+								$.each(data.languages, function(key, name){
+									if (!$('#donationEditor-' + key).length)
+									{
+										var $aTab = $('<div>', {'id': key});
+										var $donationEditor = $('<textarea>', {'id': 'donationEditor-' + key, 'class': 'editor'});								
+										$donationEditorTabs.append($donationEditor);
+										CKEDITOR.replace( 'donationEditor-' + key, {
+											extraPlugins: 'autogrow',
+											extraPlugins: 'imageuploader',
+											autoGrow_minHeight: 300,
+											autoGrow_maxHeight: 600,
+											autoGrow_bottomSpace: 50,
+											language: 'hu'
+										} );
+										
+										$aTab.append($donationEditor);
+										$donationEditorTabs.append($aTab);
+									}
+								});
+								$donationEditorTabs.tabs();
+							}
+							else
+							{
+								$('#donationEditorTabs').show();
+							}
+
+							if(data.donation_content)
+							{
+								$.each(data.languages, function(key, name){	
+										CKEDITOR.instances[("donationEditor-" + key)].setData(data.donation_content[key]);
+								});
+							}
+						break;
+
 						case 'showStory':
 							if (!data.story_combobox.length) return;
 							$('main').empty();
@@ -2443,11 +2681,13 @@ function load_content(url)
 						case 'showEntry':
 
 							$("#competition-combobox").change(function(e){
-
+								
 								$('.entry-table, #modify_accepted').remove();
+
 								if($(this).val())
 								{
 									$('main').append("<button id='modify_accepted' type='button' >Mentés és levélküldés</button>");
+									$('main').append("<div id='show'></div>");
 									$('main').append("<div id='entry-table-container'></div>");
 
 									$('#entry-table-container').append("<table class='entry-table'>"+
@@ -2457,6 +2697,7 @@ function load_content(url)
 														"<th>Ok</th>" +														
 														"<th>Reg. kód</th>" +
 														"<th style='white-space:nowrap'>Versenyző neve</th>" +
+														"<th>Reg. dátum</th>" +
 														"<th>Szül.</th>" +
 														"<th style='white-space:nowrap'>Anyja neve</th>" +
 														"<th>Táv.</th>" +
@@ -2464,7 +2705,7 @@ function load_content(url)
 														"<th>Email</th>" +
 														"<th>Neme</th>" +														
 														"<th>Megerősítő email</th>" +
-														"<th>City</th>" +
+														"<th>Település</th>" +
 														"<th>SZIG</th>" +
 														"<th>Telefon</th>" +
 														"<th>ER neve</th>" +
@@ -2479,22 +2720,159 @@ function load_content(url)
 												"<tbody>" +
 												"</tbody>" +
 											   "</table>");
+									
 									$(".odt-top").html("");
 									$(".odt-pagination-container").html("");
+									$(".entry-table").tableHeadFixer();
+									
+									
+									
 									$(".entry-table").OpenDataTable({  
 										url:"../admin/php/competition_entry_list.php",
 										param: $(this).val(),
 										callback: function(data) {
+												
 												var myTable = $(".entry-table").tableExport();
+												
+												if(data.guest_row)
+												{
+													var $guest_table_show_hide_btn = $('<button>', {'id': 'guest-table-show-hide_btn','html':'Kísérők mutatása'});
+													var $guest_table_container = $('<div>', {'id': 'guest-table-container'});
+													var i;
+													var guest_table = "<table class='guest_table odt-main'>";
+														guest_table += "<thead>"; 
+														guest_table += "<tr>"; 
+														guest_table += "<th>Reg. kód</th>";
+														guest_table += "<th>Versenyző neve</th>";
+														guest_table += "<th>Kísérő neve</th>";		
+														guest_table += "<th>Születési név</th>";
+														guest_table += "<th>Anyja neve</th>";
+														guest_table += "<th>Születési dátum</th>";
+														guest_table += "<th>Neme</th>";
+														guest_table += "<th>Igazolvány száma</th>";
+														guest_table += "<th>Igazolvány típusa</th>";
+														guest_table += "<th>Telefonszám</th>";
+														guest_table += "<th>Email</th>";
+														guest_table += "<th>Állampolgárság</th>";
+														guest_table += "<th>Irányítószám</th>";
+														guest_table += "<th>Település</th>";
+														guest_table += "<th>Cím</th>";
+														guest_table += "<th>Gépjármű adatok</th>";
+														guest_table += "<th>ER név</th>";
+														guest_table += "<th>ER telefonszám</th>";
+														guest_table += "</tr>"; 
+														guest_table += "</thead>";
 
+														guest_table += "<tbody>";
+														for(i = 0; i < data.guest_row.length; i++)
+														{
+															
+															guest_table += "<tr>"; 
+															guest_table += "<td>" + data.guest_row[i][0].comp_reg_id + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].competitior_lastname + " ";
+															guest_table += data.guest_row[i][0].competitior_firstname + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].lastname + " ";
+															guest_table += data.guest_row[i][0].firstname + "</td>";			
+															guest_table += "<td>" + data.guest_row[i][0].bornname + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].mothername + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].borndate + "</td>";
+															guest_table += "<td>" + ((data.guest_row[i][0].sex=="1")?"férfi":"nő")	+ "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].pid + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].pid_type + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].phone + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].email + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].nationality + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].zip + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].city + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].address + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].auto + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].er_name + "</td>";
+															guest_table += "<td>" + data.guest_row[i][0].er_phone + "</td>";
+															guest_table += "</tr>"; 
+														}
+														guest_table += "</tbody>";
+													guest_table += "</table>";
+													$guest_table_container.append(guest_table);
+													$("#entry-table-container").after($guest_table_show_hide_btn, $guest_table_container);
+													
+													$('#guest-table-show-hide_btn').click(function(e){
+														if($('#guest-table-container').is(":visible"))
+														{
+															$(this).html('Kísérők mutatása');
+															$('#guest-table-container').hide();
+														}
+														else
+														{
+															$(this).html('Kísérők elrejtése');
+															$('#guest-table-container').show();
+														}
+													});
+													
+													var myGuestTable = $(".guest_table").tableExport();
+													
+													myGuestTable.update({
+														filename: "kiserok_" + $(".competition-combobox option:selected").text(),
+														formats: ["xlsx", "csv", "txt"],
+														exportButtons: true,
+														position: "bottom"
+													});
+												}
+												
+												//********* mark out of date registrations start **********
+
+												//mark unconfirmed regs
+
+												var today = new Date();
+												var deadline = 5 //days
+												$('.entry-table tr td:nth-child(5)').each(function(){
+													var date = new Date($(this).html());
+													date.setDate(date.getDate()+deadline);
+
+													if (date < today && !$(this).parent().find('.accepted').is(":checked")) 
+													{
+														$(this).parent().addClass('regOutOfDate');
+													};
+												});
+
+												// mark unpayed regs
+
+												$('.entry-table tr td:nth-child(12)').each(function(){
+													if ($(this).html() != 'nem') 
+													{
+														var date = new Date($(this).html());
+														date.setDate(date.getDate()+deadline);
+
+														if (date < today && !$(this).parent().find('.accepted').is(":checked")) 
+														{
+															$(this).parent().addClass('regUnpayed');
+														};	
+													}
+												});
+
+												//********* mark out of date registrations start **********
+
+												
+												$('.btn-primary').each(function() {
+													var col = $(this).attr('data-show');
+													
+													$('tr').each(function() { 
+														$('td:eq(' + col + ')',this).hide();
+													});
+													
+												});
+												
 												if ($('#entry-numrows').length) 
 												{
-													$('#entry-numrows').html("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+"</div>");
+													$('#entry-numrows').html("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+" / <span class='accepted' >"+data.num_reg_confirm+"</span></div>");
+
 												}
 												else
 												{
-													$('#modify_accepted').after("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+"</div>");
+													$('#modify_accepted').after("<div id='entry-numrows'>Nevezések száma: "+data.num_rows+" / <span class='accepted'>"+data.num_reg_confirm+"</span></div>");
+
+
 												}
+												
 												myTable.update({
 													filename: $(".competition-combobox option:selected").text(),
 													formats: ["xlsx", "csv", "txt"],
@@ -2503,6 +2881,8 @@ function load_content(url)
 													position: "bottom",
 													ignoreCols: [1,18,19] 
 												});
+												
+												
 												
 										  		if(!data.num_rec)
 										  		{
@@ -2558,51 +2938,89 @@ function load_content(url)
 															}
 													});
 												});
-
+												
 												$('.send_conf_competition_email_btn').click(function(e){
 													var that = $(this);
 													$.confirm({
-															title: 'Visszavonás',
-															boxWidth: '30%',
-															useBootstrap: false,
-															content: 'Biztosan kiküldi a megerősítő e-mailt?',	
-															buttons: {
-																confirm: {
-																	text: 'Igen',
-																	action: function(){
-																		$.post("php/main.php",{
-																							menu: linked_to + "Entry",
-																							linked_to: linked_to,
-																							target: "main",
-																							action: "send_conf_competition_email",
-																						   	competitionRegID: that.attr("comp_reg_id"),
-																						   	competitionID: that.attr("competition_id"),
-																						   	lang: that.attr("lang")
-																						   },
-																				function(data)
+														title: 'Visszavonás',
+														boxWidth: '30%',
+														useBootstrap: false,
+														content: 'Biztosan kiküldi a megerősítő e-mailt?',	
+														buttons: {
+															confirm: {
+																text: 'Igen',
+																action: function(){
+																	$.post("php/main.php",{
+																						menu: linked_to + "Entry",
+																						linked_to: linked_to,
+																						target: "main",
+																						action: "send_conf_competition_email",
+																					   	competitionRegID: that.attr("comp_reg_id"),
+																					   	competitionID: that.attr("competition_id"),
+																					   	lang: that.attr("lang")
+																					   },
+																			function(data)
+																			{
+																				
+																				data = jQuery.parseJSON(data);
+																				if (data.message == "sent_confirm_comp_reg_mail")
 																				{
-																					
-																					data = jQuery.parseJSON(data);
-																					if (data.message == "sent_confirm_comp_reg_mail")
-																					{
-																						that.parent().html("Elküldve");
-																					}
-																					else
-																					{
-																						showMessage("failed_sending_email");
-																					}
-																				});
-																	}
-																},
-																cancel: {
-																	text: 'Mégsem'
-
+																					that.parent().html("Elküldve");
+																				}
+																				else
+																				{
+																					showMessage("failed_sending_email");
+																				}
+																			});
 																}
+															},
+															cancel: {
+																text: 'Mégsem'
+
 															}
+														}
 													});
 												});
+
+												$('.send_competition_email_btn').click(function(e){
+													var that = $(this);
+													$.confirm({
+														title: 'Visszavonás',
+														boxWidth: '30%',
+														useBootstrap: false,
+														content: 'Biztosan kiküldi a megerősítő e-mailt?',	
+														buttons: {
+															confirm: {
+																text: 'Igen',
+																action: function(){
+																	$.post("php/main.php",{
+																						menu: linked_to + "Entry",
+																						linked_to: linked_to,
+																						target: "main",
+																						action: "send_competition_email",
+																					   	competitionRegID: that.attr("comp_reg_id"),
+																					   	competitionID: that.attr("competition_id"),
+																					   	lang: that.attr("lang")
+																					   },
+																			function(data)
+																			{
+																				data = jQuery.parseJSON(data);																					
+																				showMessage(data.message);
+																			});
+																}
+															},
+															cancel: {
+																text: 'Mégsem'
+
+															}
+														}
+													});
+												});	
+
 										}
 									});
+									
+									
 
 									$('#modify_accepted').click(function(e){
 										$.confirm({
@@ -2619,6 +3037,7 @@ function load_content(url)
 															$('.accepted:checked').each(function(){
 																data.push({name: "accepted[]", value: $(this).val()});
 															});
+
 															get_content(linked_to + "Entry" + instanceOf,$.param(data),1);											
 														}
 													},
@@ -2631,7 +3050,8 @@ function load_content(url)
 
 									});
 								}
-
+								$('.odt-top').insertBefore($('#entry-table-container'));
+								$(".entry-table").hideCols();
 							});
 
 
@@ -2709,9 +3129,8 @@ function load_content(url)
 							$("#start_hour").mask("99");
 							$("#start_minute").mask("99");
                                                         $("#teamate_number").mask("9");
-							$( "#comp_dist_1" ).checkboxradio();
-							$( "#comp_dist_2" ).checkboxradio();
-							$( "#comp_dist_3" ).checkboxradio();
+							
+							$( ".competition-distance" ).checkboxradio();
 
 							$("#competition-combobox").change(function(e){
 								get_content(linked_to + "ModifyCompetition" + instanceOf,"competitionID=" + $("option:selected", this).attr("competition_id"),0);
@@ -2778,9 +3197,8 @@ function load_content(url)
 								});
 						break;
 						case 'showDeleteCompetition':
-                                                        $( "#comp_dist_1" ).checkboxradio();
-							$( "#comp_dist_2" ).checkboxradio();
-							$( "#comp_dist_3" ).checkboxradio();
+                            $( ".competition-distance" ).checkboxradio();
+							
 							
 							$("#competition-combobox").change(function(e){
 								get_content(linked_to + "DeleteCompetition" + instanceOf,"competitionID=" + $("option:selected", this).attr("competition_id"),0);
@@ -2792,10 +3210,9 @@ function load_content(url)
 						case 'showAddCompetition':
 							$("#start_hour").mask("99");
 							$("#start_minute").mask("99");
-                                                        $("#teamate_number").mask("9");
-							$( "#comp_dist_1" ).checkboxradio();
-							$( "#comp_dist_2" ).checkboxradio();
-							$( "#comp_dist_3" ).checkboxradio();
+                            $("#teamate_number").mask("9");
+							$( ".competition-distance" ).checkboxradio();
+							
 							$( "#start_date, #reg_start_date, #reg_end_date" ).datepicker({
 						  			dateFormat:"yy-mm-dd",
 									prevText:"Előző hónap",
@@ -2855,6 +3272,193 @@ function load_content(url)
 									}
 								});
 						break;
+
+						case 'showEmail':
+
+							$("#competition-combobox").change(function(e)
+							{
+								var data = {competitionID: $(this).val()};
+								get_content(linked_to + "Email" + instanceOf,$.param(data),1);
+							});
+
+							if ($('#mailboxMailTextEditor').length) 
+							{
+								$('#mailboxMailTextEditor').html('');
+							}
+
+							if (!$('#mailboxContainer').length)
+							{
+								var $mailboxContainer = $('<div>', {'id': 'mailboxContainer'});
+								$('main').append($mailboxContainer);
+							}
+							
+
+							if (!$('#mailboxAddresses').length)
+							{
+								var $mailboxAddresses = $('<div>', {'id': 'mailboxAddresses'});
+								var $mailboxAddressHeader = $('<div>', {'id': 'mailboxAddressHeader'});
+								var $mailboxAdressToolbar = $('<div>', {'id': 'mailboxAdressToolbar'});
+								var $mailboxSearchBar = $('<div>', {'id': 'mailboxSearchBar'});
+								var $mailboxAddressContainer = $('<div>', {'id': 'mailboxAddressContainer'});
+
+								$mailboxContainer.append($mailboxAddresses);
+								$mailboxAddresses.append($mailboxAddressHeader);
+								$mailboxAddresses.append($mailboxAdressToolbar);
+								$mailboxAddresses.append($mailboxSearchBar);
+								$mailboxAddresses.append($mailboxAddressContainer);
+
+								$mailboxAddressHeader.html('Címjegyzék');
+								$mailboxSearchBar.html('<input type="text" id="addressSearchField" placeholder="Keresés">');
+
+								$mailboxAdressToolbar.append('<span id="selectAll">Mind kijelöl</span>');
+								$mailboxAdressToolbar.append('<span id="deselectAll">Egyik sem</span>');
+								$mailboxAdressToolbar.append('<span id="inverse">Megfordít</span>');
+								$mailboxAdressToolbar.append('<span id="selectRegConfirmed">Megerősítve</span>');
+								$mailboxAdressToolbar.append('<span id="selectAdminConfirmed">Admin megerősítette</span>');
+
+								if (!$('#mailboxMailTextEditor').length)
+								{
+									var $mailboxMailTextEditor = $('<div>', {'id': 'mailboxMailTextEditor'});
+									$mailboxContainer.append($mailboxMailTextEditor);
+								}
+
+								$('#selectAll').click(function()
+								{
+									$("#tableAdresses tr").each(function () 
+									{
+									     $(this).find("input[type=checkbox]").prop("checked", true);
+									});
+								});
+								$('#deselectAll').click(function()
+								{
+									$("#tableAdresses tr").each(function () 
+									{
+									     $(this).find("input[type=checkbox]").prop("checked", false);
+									});
+								});
+								$('#inverse').click(function()
+								{
+									$("#tableAdresses tr").each(function () {
+										
+									    if ($(this).find("input[type=checkbox]").is(":checked")) 
+									    {
+									    	$(this).find("input[type=checkbox]").prop("checked", false);
+									    }
+									    else
+									    {
+									    	$(this).find("input[type=checkbox]").prop("checked", true);
+									    }
+									     
+									});
+									    
+								});
+								$('#selectRegConfirmed').click(function()
+								{
+									
+									$(".regConfirmed").each(function () {
+	
+									    $(this).find("input[type=checkbox]").prop("checked", true);
+									     
+									});
+								});
+								$('#selectAdminConfirmed').click(function()
+								{
+									$(".adminConfirmed").each(function () {
+	
+									    $(this).find("input[type=checkbox]").prop("checked", true);
+									     
+									});
+								});
+							}
+							
+							// ********* email address filter start ************//
+
+							$('#addressSearchField').keyup(function() {
+								
+								// Declare variables 
+								var input, filter, table, tr, td, i, txtValue;
+								input = document.getElementById("addressSearchField");
+								filter = input.value.toUpperCase();
+								table = document.getElementById("tableAdresses");
+								tr = table.getElementsByTagName("tr");
+
+								// Loop through all table rows, and hide those who don't match the search query
+								for (i = 0; i < tr.length; i++) 
+								{
+									td = tr[i].getElementsByTagName("td")[2];
+									if (td) 
+									{
+										txtValue = td.textContent || td.innerText;
+										if (txtValue.toUpperCase().indexOf(filter) > -1) 
+										{
+											tr[i].style.display = "";
+										} 
+										else 
+										{
+											tr[i].style.display = "none";
+										}
+									} 
+								}
+							});
+
+							// ********* email address filter end ************//
+
+
+							var $mailboxTabs = $('<div>', {'id': 'mailboxTabs'});
+							
+							$('#mailboxMailTextEditor').append($mailboxTabs);
+							var tabTitle = "<ul>";
+							$.each(data.languages, function(key, name){
+								tabTitle += "<li><a href='#" + key + "'>" + name + "</a></li>";
+							});
+							tabTitle += "</ul>";
+							$mailboxTabs.append(tabTitle);
+						
+							$.each(data.languages, function(key, name){
+								
+								var $aTab = $('<div>', {'id': key});
+								var $mailboxEditor = $('<textarea>', {'id': 'mailboxEditor-' + key, 'class': 'editor'});
+								var $mailboxSubjectContainer = $('<div>', {'class': 'mailboxSubjectContainer'});
+								$aTab.append($mailboxSubjectContainer);
+								$mailboxSubjectContainer.html('<input type="text" id="subject-'+key+'" placeholder="Az e-mail tárgya" class="subject">');
+								$mailboxTabs.append($mailboxEditor);
+
+								CKEDITOR.replace( 'mailboxEditor-' + key, {
+									toolbar: [
+											{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates' ] },
+											{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+											{ name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+											'/',
+											{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
+											{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
+											{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+											{ name: 'insert', items: [ 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
+											'/',
+											{ name: 'styles', items: [ 'Format', 'Font', 'FontSize' ] }
+									],
+									extraPlugins: 'autogrow',
+									extraPlugins: 'imageuploader',
+									autoGrow_minHeight: 300,
+									autoGrow_maxHeight: 600,
+									autoGrow_bottomSpace: 50,
+									language: 'hu'
+								} );
+								$aTab.append($mailboxEditor);
+								$mailboxTabs.append($aTab);
+								
+							});
+							$mailboxTabs.tabs();
+
+							if ('addresses' in data) 
+							{
+								if ($('#mailboxAddressContainer').length) 
+								{
+									$('#mailboxAddressContainer').html(data.addresses);
+								}
+									
+							}
+
+						break;
 					}
 				break;
 			}
@@ -2871,6 +3475,7 @@ $(document).ready(function(){
 	"use strict";
 
 	initPage();
+
 
 	$('body').on('click', '.tile,  .title-path', function(e) {	
 		get_content($(this).attr('menu'),'',0);

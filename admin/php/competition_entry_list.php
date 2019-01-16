@@ -5,6 +5,7 @@ include "connect.php";
 
 $db = Database::getConnection();
 
+$str_length = 5;
 $competitionID = $_GET['param'];
 $odt_search = (!empty($_GET['odtSearch']))?$_GET['odtSearch']:"";
 $sort_col = (!empty($_GET['sortCol']))?$_GET['sortCol']:0;	
@@ -14,6 +15,7 @@ $search_col = array(
 						"admin_reg_confirm",
 						"id",
 						"lastname",
+						"reg_date",
 						"born_date",
 						"mother_name",
 						"comp_dist",
@@ -67,7 +69,8 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 										competition_registration.conf_email_sent,
 										competition_registration.lang,
 										competition_registration.reg_confirm,
-										competition_registration.city
+										competition_registration.city,
+										competition_registration.reg_date
 										FROM competition_registration
 										LEFT JOIN competition_team
 										ON competition_registration.invited_team_id = competition_team.id  
@@ -101,7 +104,7 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 	
 	$stmt->execute();
 	$stmt->store_result();
-	$stmt->bind_result($competitionRegID,$admin_reg_confirm,$team_name,$firstname,$lastname,$email,$phone,$indetity_card,$accepted_team_id,$team_id, $invited_team_id, $mother_name, $comp_dist, $sex, $born_date, $er_name, $er_phone, $t_shirt, $conf_email_sent, $lang, $reg_confirm, $city);
+	$stmt->bind_result($competitionRegID,$admin_reg_confirm,$team_name,$firstname,$lastname,$email,$phone,$indetity_card,$accepted_team_id,$team_id, $invited_team_id, $mother_name, $comp_dist, $sex, $born_date, $er_name, $er_phone, $t_shirt, $conf_email_sent, $lang, $reg_confirm, $city, $reg_date);
 	
 	
 
@@ -142,28 +145,26 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 		}
 		
 		if ($t_shirt == "4") $t_shirt_s = "XXL";
-
-		switch ($comp_dist) {
-			case "1":
-				$comp_dist = "5+";
-				break;
-			case "2":
-				$comp_dist = "10+";
-				break;
-			case "3":
-				$comp_dist = "15+";
-				break;
-		}
-
-		if ($sex == "1") 
+		
+		if ($distance_stmt = $db->prepare("SELECT 	distance.name AS distance_name	FROM 
+										competition_registration INNER JOIN distance
+										ON competition_registration.comp_dist = distance.id
+										WHERE competition_registration.id = ?
+									"))
 		{
-			$sex = "férfi";
+			$distance_stmt->bind_param("i",$competitionRegID);
+			$distance_stmt->execute();
+			$distance_result = $distance_stmt->get_result();
+			$distance_row = $distance_result->fetch_assoc();
+			$comp_dist = $distance_row["distance_name"] ;
+			
+			
 		}
-		else
-		{
-			$sex = "nő";
-		}
+		else return -1;
 
+		
+
+		
 		if ($reg_confirm == "1") 
 		{
 			$reg_confirm = "igen";
@@ -171,30 +172,30 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 		else
 		{
 			$reg_confirm = "nem";
+			//$reg_confirm = "<button class='send_competition_email_btn' comp_reg_id='".$competitionRegID."' competition_id='".$competitionID."' lang='".$lang."'>Elküld</button>";
 		}
 
 		if ($conf_email_sent == 0) 
 		{
-			$conf_email_sent = "<button class='send_conf_competition_email_btn' comp_reg_id='".$competitionRegID."' competition_id='".$competitionID."' lang='".$lang."'>Elküld</button>";
+			$conf_email_sent = "nem";
+			//$conf_email_sent = "<button class='send_conf_competition_email_btn' comp_reg_id='".$competitionRegID."' competition_id='".$competitionID."' lang='".$lang."'>Elküld</button>";
 		}
-		else
-		{
-			$conf_email_sent = "Elküldve";
-		}
+		
 
-		$str_length = 5;
+		
 		$dataRaw = array(	
 							$team_name.($invited_team_id?($accepted_team_id?" - <span style='color:#a9bc87; font-weight:bold'>elfogadva</span>":" - <span style='color:#bfac70'>folyamatban</span>"):"Nincs csapatfelkérés"),
 							"<input type='checkbox' ".($checked=$admin_reg_confirm == '1'?'checked':'')." ".($disabled=$admin_reg_confirm == '1'?'disabled':'')." name='accepted' class='accepted' value='".$competitionRegID."'>",
 
 							substr(str_repeat(0, $str_length) . $competitionRegID, -$str_length),
 							$lastname." ".$firstname,
+							$reg_date,
 							$born_date,
 							$mother_name,
 							$comp_dist,
 							$t_shirt,
 							$email,
-							$sex,
+							($sex == '1')?'férfi':'nő',
 							$conf_email_sent,
 							$city,
 							$indetity_card,
@@ -225,6 +226,47 @@ if ($stmt = $db->prepare("SELECT 		competition_registration.id,
 		
 	}
 	else return -1;
+
+	if ($stmt = $db->prepare("SELECT 	id	
+										FROM competition_registration 
+											WHERE competition_id = ? AND admin_reg_confirm = '1' 
+									"))
+	{
+		$stmt->bind_param("i",$competitionID);
+		$stmt->execute();
+		$stmt->store_result();
+		
+		$data['num_reg_confirm'] = $stmt->num_rows;
+		
+	}
+	else return -1;
+
+	if ($stmt = $stmt = $db->prepare("SELECT reg_type FROM competition WHERE id = ?"))
+		{
+
+			$stmt->bind_param("i", $competitionID);
+			$stmt->execute();
+			$result = $stmt->get_result();
+			$row = $result->fetch_assoc();
+
+			if($row["reg_type"] == "military")
+			{
+				if ($stmt = $db->prepare("SELECT competition_guest_registration.*, competition_registration.lastname as competitior_lastname, competition_registration.firstname as competitior_firstname FROM competition_guest_registration INNER JOIN competition_registration ON competition_guest_registration.comp_reg_id = competition_registration.id WHERE competition_registration.competition_id = ? ORDER BY competitior_lastname, competitior_firstname, lastname, firstname"))
+				{
+					$stmt->bind_param("i", $competitionID);
+					$stmt->execute();
+					$result = $stmt->get_result();
+					while($row = $result->fetch_assoc())
+					{
+						$row["comp_reg_id"] = substr(str_repeat(0, $str_length) . $competitionRegID, -$str_length);
+						$dataRaw = array($row);
+						$data['guest_row'][] = $dataRaw;
+					}
+				}
+				else return -1;
+			}
+		}
+		else return -1;
 }
 else return -1;
 echo json_encode($data);

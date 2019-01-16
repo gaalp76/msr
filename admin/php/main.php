@@ -14,6 +14,7 @@ require_once "colleague.php";
 require_once "basic_timestate_editor.php";
 require_once "aboutus.php";
 require_once "rules.php";
+require_once "donation.php";
 require_once "contacts.php";
 require_once "story.php";
 require_once "competition_obstacles.php";
@@ -23,6 +24,7 @@ require_once "competition.php";
 require_once "competition_map.php";
 require_once "competition_approach.php";
 require_once "competition_entry.php";
+require_once "mailbox_class.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -83,6 +85,30 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 			break;
 
 			case $linkedTo."Msr".$instanceOf:
+				$returnArray["content"] = "MSR kezdőoldal";
+			break;
+
+			case $linkedTo."Sr".$instanceOf:
+				$returnArray["content"] = "SR kezdőoldal";
+			break;
+
+			case $linkedTo."Vulcanrun".$instanceOf:
+				$returnArray["content"] = "VulcanRun - terepfutás kezdőoldal";
+			break;
+
+			case $linkedTo."HalfMarathon".$instanceOf:
+				$returnArray["content"] = "Félmaraton kezdőoldal";
+			break;
+
+			case $linkedTo."VulcanObstacle".$instanceOf:
+				$returnArray["content"] = "VulcanRun - akadályfutás kezdőoldal";
+			break;
+
+			case $linkedTo."AboutUsMain".$instanceOf:
+				$returnArray["content"] = "Rólunk kezdőoldal";
+			break;
+
+			case $linkedTo."Msr".$instanceOf:
 			break;
 
 	// ******************************************************************************
@@ -103,13 +129,15 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 							return;
 						break;
 						case "addUser":
+							$isAdmin = isset($_POST["isAdmin"]) ? $_POST["isAdmin"]: 0;
 							$returnArray["message"] = $user -> addUser(	
 																			$_POST["lastname"],
 																			$_POST["firstname"],
 																			$_POST["phone"],
 																			$_POST["username"],
 																			$_POST["password"],
-																			$_POST["confirm_password"]
+																			$_POST["confirm_password"],
+																			$isAdmin
 																		);
 							$user->userID = 0;
 						break;
@@ -132,13 +160,15 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 							return;
 						break;
 						case "editUser":
+							$isAdmin = isset($_POST["isAdmin"]) ? $_POST["isAdmin"]: 0;
 							$returnArray["message"] = $user->updateUser(
 																			$_POST["lastname"],
 																			$_POST["firstname"],
 																			$_POST["phone"],
 																			$_POST["username"],
 																			$_POST["password"],
-																			$_POST["confirm_password"]
+																			$_POST["confirm_password"],
+																			$isAdmin
 																);
 							$user->userID = 0;
 						break;
@@ -180,7 +210,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 
 				$competition -> competitionID = isset($_POST["competitionID"])?$_POST["competitionID"]:0;
 				$returnArray["content"] = $competition -> getCompetitionComboBox($linkedTo);
-			
+
 				if (isset($_POST["action"]))
 				{
 					switch ($_POST["action"]) {
@@ -206,7 +236,17 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 							if(isset($_POST["competitionRegID"]))
 							{
 									
-									$returnArray["message"] = $competition_entry ->  sendMailConfirmRegistration($_POST["competitionRegID"], 
+									$returnArray["message"] = $competition_entry ->  sendMailConfirmRegistration($_POST["competitionRegID"],
+																												 $_POST["competitionID"],
+																												 1,
+																												 $_POST["lang"]);
+							}
+							break;
+						case 'send_competition_email':	
+							if(isset($_POST["competitionRegID"]))
+							{
+									
+									$returnArray["message"] = $competition_entry ->  sendMailRegistration($_POST["competitionRegID"], 
 																												 $_POST["competitionID"],
 																												 1,
 																												 $_POST["lang"]);
@@ -237,9 +277,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 																				$_POST["max_reg_number"],
 																				$_POST["reg_type"],
 																				$_POST["teamate_number"],
-																				isset($_POST["comp_dist_1"])?$_POST["comp_dist_1"]:0,
-																				isset($_POST["comp_dist_2"])?$_POST["comp_dist_2"]:0,
-																				isset($_POST["comp_dist_3"])?$_POST["comp_dist_3"]:0,
+																				isset($_POST["comp_dist"])?$_POST["comp_dist"]:"",
 																				$linkedTo
 																			);
 				}
@@ -260,9 +298,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 																				$_POST["max_reg_number"],
 																				$_POST["reg_type"],
 																				$_POST["teamate_number"],
-																				isset($_POST["comp_dist_1"])?$_POST["comp_dist_1"]:0,
-																				isset($_POST["comp_dist_2"])?$_POST["comp_dist_2"]:0,
-																				isset($_POST["comp_dist_3"])?$_POST["comp_dist_3"]:0
+																				isset($_POST["comp_dist"])?$_POST["comp_dist"]:""	
 																			);
 				}
 				else if(isset($_POST["competitionID"]) && $_POST["competitionID"]!=0 )
@@ -312,19 +348,21 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 				$competition = new Competition($db);
 				$information = new CompetitionInfo($db, "competition_info", "competition_info_language", "competition_info_id");
 				$uploadManagerObj = new UploadManager($db);
-
+				
 				if (isset($_POST["action"]) && $_POST["action"] == "set_other" && $_POST["information_id"]!="-1")
 				{
+
 					if (($returnArray["information_combobox"] = $information->setBasicTimeStateEditor($linkedTo, $_POST["information_id"], $_POST["competitionID"])) != -1 &&
 						($returnArray["information_content"] = $information->getBasicTimeStateEditor($linkedTo, $_POST["information_id"] )) != -1 )
 					{
+
 						$returnArray["message"] = "success_other_save";
 					}
 					else $returnArray["message"] = "failed_database"; 
 
 				}
 				else
-				
+					
 					if (isset($_POST["file_id"]))
 					{
 						if ($uploadManagerObj -> updateDocumentAttachment( isset($_POST["file_id"])?$_POST["file_id"]:"",
@@ -339,6 +377,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 
 						if (($returnArray["information_combobox"] = $information->addBasicTimeStateEditor($_POST["information_content"], $linkedTo, $_POST["competitionID"])) != -1)
 						{		
+
 							$uploadManagerObj -> deleteDocumentAttachment( $_POST["document_linked_to"], $_POST["document_instance_of"]);
 							$returnArray["information_content"] = $information->getBasicTimeStateEditor($linkedTo);
 							$returnArray["message"] = "success_save";							
@@ -980,6 +1019,154 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 					else
 					{
 
+						if (($returnArray["contacts_combobox"] = $contacts->addBasicTimeStateEditor(isset($_POST["contacts_content"])?$_POST["contacts_content"]:"", $linkedTo)) != -1)
+						{
+							$uploadManagerObj -> deleteDocumentAttachment( $_POST["document_linked_to"], $_POST["document_instance_of"]);
+							$returnArray["contacts_content"] = $contacts->getBasicTimeStateEditor($linkedTo);							
+		                   	$returnArray["message"] = "success_save";
+						} 
+						else 	$returnArray["message"] = "failed_database";
+					}
+							
+			break;
+
+            case $linkedTo."ContactsDelete".$instanceOf:
+
+				$contacts = new Contacts($db, "contacts", "contacts_language", "contacts_id");
+				if (isset($_POST["contacts_id"]) && $_POST["contacts_id"]!="-1")
+				{
+					if 	($contacts->deleteContacts($_POST["contacts_id"]) != -1 && 
+						($returnArray["contacts_combobox"] = $contacts->getBasicTimeStateEditorComboBox($linkedTo)) != -1 &&
+						($returnArray["contacts_content"] = $contacts->getBasicTimeStateEditor($linkedTo)) != -1 )
+					{
+						$returnArray["message"] = "success_delete";
+					}
+					else $returnArray["message"] = "failed_database"; 
+				}
+			break;
+
+	// ******************************************************************************
+	// *                             Támogatók menü                                 *
+	// ******************************************************************************
+
+			case $linkedTo."DonationWrite".$instanceOf:
+			case $linkedTo."Donation".$instanceOf:
+
+				$donation = new Donation($db, "donation", "donation_language", "donation_id");
+				if (($returnArray["donation_combobox"] = $donation->getBasicTimeStateEditorComboBox($linkedTo)) == -1 || 
+					($returnArray["donation_content"] = $donation->getBasicTimeStateEditor($linkedTo)) == -1 )
+				{ 
+					$returnArray['message'] = "failed_database";
+					$returnArray["donation_combobox"] = $returnArray["donation_content"] = "";
+				}
+				
+			break;
+
+			case $linkedTo."DonationSaveBtn".$instanceOf:
+
+				$donation = new Donation($db, "donation", "donation_language", "donation_id");
+				$uploadManagerObj = new UploadManager($db);
+
+				if (isset($_POST["action"]) && $_POST["action"] == "set_other" && $_POST["donation_id"]!="-1")
+				{
+					if (($returnArray["donation_combobox"] = $donation->setBasicTimeStateEditor($linkedTo, $_POST["donation_id"])) != -1 &&
+						($returnArray["donation_content"] = $donation->getBasicTimeStateEditor($linkedTo, $_POST["donation_id"] )) != -1 )
+					{
+						$returnArray["message"] = "success_other_save";
+					}
+					else $returnArray["message"] = "failed_database"; 
+
+				}
+				else
+
+					if (isset($_POST["file_id"]))
+					{
+						if ($uploadManagerObj -> updateDocumentAttachment( isset($_POST["file_id"])?$_POST["file_id"]:"",
+																$_POST["document_linked_to"],
+																$_POST["document_instance_of"]) != -1 )
+							{
+								$returnArray["message"] = "success_save";
+							}
+							else $returnArray["message"] = "failed_database";
+
+					}
+					else
+					{
+
+						if (($returnArray["donation_combobox"] = $donation->addBasicTimeStateEditor($_POST["donation_content"], $linkedTo)) != -1)
+						{
+							$uploadManagerObj -> deleteDocumentAttachment( $_POST["document_linked_to"], $_POST["document_instance_of"]);
+							$returnArray["donation_content"] = $donation->getBasicTimeStateEditor($linkedTo);							
+		                   	$returnArray["message"] = "success_save";
+						} 
+						else 	$returnArray["message"] = "failed_database";
+					}
+							
+			break;
+
+            case $linkedTo."DonationDelete".$instanceOf:
+
+				$donation = new Donation($db, "donation", "donation_language", "donation_id");
+				if (isset($_POST["donation_id"]) && $_POST["donation_id"]!="-1")
+				{
+					if 	($donation->deleteDonation($_POST["donation_id"]) != -1 && 
+						($returnArray["donation_combobox"] = $donation->getBasicTimeStateEditorComboBox($linkedTo)) != -1 &&
+						($returnArray["donation_content"] = $donation->getBasicTimeStateEditor($linkedTo)) != -1 )
+					{
+						$returnArray["message"] = "success_delete";
+					}
+					else $returnArray["message"] = "failed_database"; 
+				}
+			break;
+
+	// ******************************************************************************
+	// *                             Kapcsolat menü                                 *
+	// ******************************************************************************
+
+			case $linkedTo."ContactsWrite".$instanceOf:
+			case $linkedTo."Contacts".$instanceOf:
+				
+				$contacts = new Contacts($db, "contacts", "contacts_language", "contacts_id");
+				if (($returnArray["contacts_combobox"] = $contacts->getBasicTimeStateEditorComboBox($linkedTo)) == -1 || 
+					($returnArray["contacts_content"] = $contacts->getBasicTimeStateEditor($linkedTo)) == -1 )
+				{ 
+					$returnArray['message'] = "failed_database";
+					$returnArray["contacts_combobox"] = $returnArray["contacts_content"] = "";
+				}
+				
+			break;
+
+			case $linkedTo."ContactsSaveBtn".$instanceOf:
+
+				$contacts = new Contacts($db, "contacts", "contacts_language", "contacts_id");
+				$uploadManagerObj = new UploadManager($db);
+
+				if (isset($_POST["action"]) && $_POST["action"] == "set_other" && $_POST["contacts_id"]!="-1")
+				{
+					if (($returnArray["contacts_combobox"] = $contacts->setBasicTimeStateEditor($linkedTo, $_POST["contacts_id"])) != -1 &&
+						($returnArray["contacts_content"] = $contacts->getBasicTimeStateEditor($linkedTo, $_POST["contacts_id"] )) != -1 )
+					{
+						$returnArray["message"] = "success_other_save";
+					}
+					else $returnArray["message"] = "failed_database"; 
+
+				}
+				else
+
+					if (isset($_POST["file_id"]))
+					{
+						if ($uploadManagerObj -> updateDocumentAttachment( isset($_POST["file_id"])?$_POST["file_id"]:"",
+																$_POST["document_linked_to"],
+																$_POST["document_instance_of"]) != -1 )
+							{
+								$returnArray["message"] = "success_save";
+							}
+							else $returnArray["message"] = "failed_database";
+
+					}
+					else
+					{
+
 						if (($returnArray["contacts_combobox"] = $contacts->addBasicTimeStateEditor($_POST["contacts_content"], $linkedTo)) != -1)
 						{
 							$uploadManagerObj -> deleteDocumentAttachment( $_POST["document_linked_to"], $_POST["document_instance_of"]);
@@ -1300,6 +1487,34 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 				}
 				$returnArray["content"] = $colleague->getColleagueForm("Munkatárs törlése","Törlés", $uploadRootFolderID, $linkedTo, 0, 1, 1);
 			break;
+
+
+	// ******************************************************************************
+	// *                             Email menü                                 *
+	// ******************************************************************************
+
+			case $linkedTo."Email".$instanceOf:
+				$mailboxObj = new MailboxClass($db);
+
+				$mailboxObj -> competitionID = isset($_POST["competitionID"]) ? $_POST["competitionID"] : 0;
+				$returnArray["content"] = $mailboxObj -> getCompetitionComboBox($linkedTo);
+				
+				if ($mailboxObj -> competitionID != 0) {
+					$returnArray["addresses"] = $mailboxObj -> getAddresses($mailboxObj->competitionID);
+				}
+			
+				if (isset($_POST["action"]))
+				{
+					switch ($_POST["action"]) {
+					}
+				}
+
+			break;
+			case $linkedTo."SendMailBtn".$instanceOf:
+				$mailboxObj = new MailboxClass($db);
+
+				$mailboxObj -> competitionID = isset($_POST["competitionID"]) ? $_POST["competitionID"] : 0;
+				$returnArray["message"] = $mailboxObj -> sendMultipleEmail($_POST["subject"],$_POST["email_text"], $_POST["compregID"]);
 
 			default:			
 				

@@ -21,6 +21,7 @@ $.extend( $.validator.messages, {
 	empty_login_password: "Kérjük, adja meg a jelszót!",
 	empty_news_search: "A keresés nem eredményezett találatot!",
 	empty_news_assign: "Nincs hír kijelölve!",
+	empty_competition_assign: "Nincs verseny kijelölve!",
 	empty_folder_name: "Hiányzó név.",
 	empty_uploadmanager_folders: "A mappa/album tartalma üres.",
 	empty_document_handler: "Nincsenek feltöltött dokumentumok.",
@@ -94,6 +95,8 @@ $.extend( $.validator.messages, {
 	success_document_attachment: "Dokumentumok csatolása megtörtént.",
 	success_document_attachment_delete: "Dokumentum csatolások törlése megtörtént.",
 	success_other_save: "Másik időpontra való átállás megtörtént.",
+	success_send_comp_reg_mail: "A regisztrációs email elküdve.",
+	success_sent_custom_email: "Email(ek) elküldve.",
 
 	required: "Kötelező megadni.",
 	maxlength: $.validator.format( "Legfeljebb {0} karakter hosszú legyen." ),

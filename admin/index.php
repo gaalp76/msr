@@ -12,16 +12,17 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/styles.css?v=1.0.0.2"  />
+	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/styles.css?v=1.0.0.3"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/jquery-ui-admin.css"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/jquery-confirm.css"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/open-data-table.css?v=1.0.0.1"  />
 	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/tableexport.css">
+	<link rel="stylesheet" type="text/css" media="screen,projection" href="css/hide_cols.css">
 	<link href="https://fonts.googleapis.com/css?family=Rajdhani" rel="stylesheet">
     <link href="css/dropzone.css" rel="stylesheet">
 
 	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/main.js?v=1.0.0.2"></script>
+	<script src="js/main.js?v=1.0.0.4"></script>
 
 	<script src="js/jquery-ui.js"></script>
 
@@ -35,7 +36,8 @@
 	<script src="js/filesaver.min.js"></script>
 	<script src="js/xlsx.core.min.js"></script>
 	<script src="js/tableexport.js"></script>
-
+	<script src="js/tableheadfixer.js"></script>
+	<script src="js/hide_cols.js"></script>
 	
 </head>
 

@@ -1,5 +1,5 @@
 <?php 
-$html  = "<div id='show-login-btn'>Bejelentkezés / Regisztráció</div>";
+$html  = '<div id="show-login-btn"><img src="img/common/login-icon.png" id="logout" alt="Bejelentkezés/Regisztráció" title="Bejelentkezés/Regisztráció"></div>';
 $html .= "<div id='login-container'>";
 $html .= "	<div id='login-name-cont' class='field-cont'>";
 $html .= "		<span class='field-text'>Azonosító:</span>";

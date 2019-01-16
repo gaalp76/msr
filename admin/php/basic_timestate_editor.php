@@ -155,8 +155,9 @@ class BasicTimeStateEditor extends Config
 	{
 		$MainID = $this->getBasicTimeStateEditorMainId($ID);
 
-		if ($stmt = $this->db->prepare("UPDATE ".$this->TableName." SET act = 0"))
+		if ($stmt = $this->db->prepare("UPDATE ".$this->TableName." SET act = 0 WHERE linked_to = ?"))
 		{
+			$stmt->bind_param('s', $linkedTo);
 			$stmt->execute();
 		}
 		else return -1;
@@ -185,8 +186,9 @@ class BasicTimeStateEditor extends Config
 	{	
 		$MainID = $this->getBasicTimeStateEditorMainId();
 		
-		if ($stmt = $this->db->prepare("UPDATE ".$this->TableName." SET act = 0"))
+		if ($stmt = $this->db->prepare("UPDATE ".$this->TableName." SET act = 0 WHERE linked_to = ?"))
 		{
+			$stmt->bind_param('s', $linkedTo);
 			$stmt->execute();
 		}
 		else return -1;

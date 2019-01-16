@@ -37,7 +37,7 @@ nav{
 	-ms-flex-wrap: wrap; /* IE10 */
 	flex-wrap: wrap;
 	overflow-y: hidden;
-	z-index: 20;
+	z-index: 500;
 }
 
 footer{
@@ -63,7 +63,18 @@ main{
 #hamburger-menu{
 	display: none;
 }
-#content{
+#competition-name{
+	position: absolute;
+	z-index: 100;
+	top: 50px;
+	color: white;
+    font-size: 140%;
+    width: 100%;
+    text-align: center;
+    background-color: #11223396;
+    padding: 5px;
+}
+#content-container{
 	display: none;
 	position: absolute;
 	background-color: #efefef;
@@ -79,30 +90,39 @@ main{
 	z-index: 100;
 	color: #555;
 }
-#content p, #content ul, #content ol, #content span{
+#content-container p, #content-container ul, #content-container ol, #content-container span{
 	font-size: calc(0.7rem + 0.4vw);
 	line-height: 150%;
 }
 
-#content table, not:(.document_container){
+#content{
+	margin:40px 25px 0 25px;
+	text-align: justify;
+}
+#content-container table, not:(.document_container){
 	border: 1px solid #444;
 	background-color: #f4f4f4;
 }
-#content td, not:(.document_container){
+#content-container td, not:(.document_container){
 	border: 1px solid #444;
 }
-#content h1{
+#content-container h1{
 	font-size: calc(1.1rem + 0.4vw);
 	font-weight: bold;
 	margin: 15px 15px 15px 15px;
 	/*border-bottom: 1px solid #ddd;
 	width: 90%;*/
 }
-#content p, #content div, #content :not(img.banner-image), #content table, #content span{
+#content-container p, #content-container div, #content-container :not(img.banner-image), #content-container table, #content-container span{
 	margin-left: 15px;
 	margin-right: 15px;
 }
-#content img{
+#content-container .registration-not-active-container{
+	padding-left: 25px;
+	background-color: #f9821c;
+	color: #333;
+}
+#content-container img{
 	max-width: 100%;
 	height: auto;
 }
@@ -129,12 +149,7 @@ main{
 .rules-banner{
 	background-image: url(../img/rulesregulations.jpg);
 }
-.sub-content, #sub-content{
-	float: left;
-	max-width: 900px;
-	text-align: justify;
-}
-.sub-content, #sub-content, .gallery-container {
+.gallery-container {
 	margin: 25px;
 }
 .document-container .documents{
@@ -144,25 +159,25 @@ main{
 	white-space: nowrap;
 	line-height: 120%;
 }
-#content h2{
+#content-container h2{
 	color: #990202;
 	font-size: 100%;
 	width: 100%;
 }
-#content a, #information-box .info-entry{
+#content-container a, #information-box .info-entry{
 	color: #047ef8;
 	text-decoration: none;
 	cursor:pointer;
 }
-#content .container{
+#content-container .container{
 	width:100%;
 	padding: 15px;
 }
-#content .bg-gray{
+#content-container .bg-gray{
 	background-color: #efefef;
 
 }
-#content .align-center{
+#content-container .align-center{
 	text-align: center;
 }
 #right-side-bar{
@@ -178,7 +193,7 @@ main{
 	z-index: 0;
 	margin: 0;
 	padding: 0;
-	background-image : url('../img/map2.jpg');
+	background-image : url('../img/map3.jpg');
 	background-size: auto 130%;
 	background-repeat: no-repeat;
 	background-position: 40%;
@@ -187,6 +202,7 @@ main{
 	-ms-flex-wrap: wrap; /* IE10 */
 	flex-wrap: wrap;
 	flex-direction: column;
+	perspective: 50em;
 }
 #logo{
 	position: absolute;
@@ -194,10 +210,13 @@ main{
 	left:2%;
 	background-image: url(../img/logos.png);
 	width: 25%;
-	height: 50%;
-
+	height: 25%;
 	background-size: contain;
 	background-repeat: no-repeat;
+	-webkit-transform-style: preserve-3d; /* Safari 3-8  */  
+	-webkit-transform: rotateX(16deg); /* Safari 3-8  */
+	transform-style: preserve-3d;
+	transform: rotateX(16deg);
 }
 #north-pointer{
 	position: absolute;
@@ -214,7 +233,7 @@ main{
 
 	position: absolute;
 	left:0;
-	top:70px;
+	top:100px;
 	width:200px;
 	z-index: 15;
 	overflow: none;
@@ -259,8 +278,9 @@ main{
 }
 
 #information-box .content{
-	font-size: 14px;
+	font-size: 80%;
 	padding:10px;
+	min-height: 170px;
 	width:176px;
 	float:left;
 	border:1px solid gray;
@@ -275,6 +295,7 @@ main{
 	height: 170px;
 	background: linear-gradient(to bottom right, #b3243c, #35020b);
 	border:1px solid black;
+	cursor:pointer;
 }
 
 #information-box .open-close{
@@ -282,9 +303,6 @@ main{
 	height:22px;
 	background-color: rgb(255,255,255);
 	border:1px solid black;
-	cursor:pointer;
-
-
 }
 
 #information-box .close{
@@ -318,10 +336,14 @@ main{
 #hun-text{
 	display:block; /* animate version none*/
 	position: absolute;
-	top: 33%;
+	top: 32%;
 	left: 74%;
 	font-size: calc(2.5rem + 1.2vw);
 	color: white;
+	-webkit-transform-style: preserve-3d; /* Safari 3-8  */  
+	-webkit-transform: rotateX(16deg); /* Safari 3-8  */
+	transform-style: preserve-3d;
+	transform: rotateX(16deg);
 }
 #box-container{
 	position: absolute;
@@ -329,7 +351,10 @@ main{
 	top: 20%;/*90px;*/
 	z-index: 10;
 	width: 30%;
-
+	-webkit-transform-style: preserve-3d; /* Safari 3-8  */  
+	-webkit-transform: rotateX(16deg); /* Safari 3-8  */
+	transform-style: preserve-3d;
+	transform: rotateX(16deg);
 }
 #box-container div{
 	background-color: white;
@@ -403,7 +428,7 @@ main{
 .tile-container .tile{
 	font-family: 'Didact Gothic', sans-serif;/*'Black Ops One', cursive;*/
 	font-size: calc(0.4rem + 0.9vw);
-	line-height: 35px;
+	line-height: 45px;
 	padding: 0 15px; 
 	cursor: pointer;
 	white-space: nowrap;
@@ -426,12 +451,12 @@ main{
 	font-size: calc(0.4rem + 0.4vw);
 	cursor: pointer;
 	position: absolute;
-	right: 10px;
-	top: 30px;
+	right: 50px;
+	top: 6px;
 	white-space: nowrap;
 	margin: auto;
 	text-align: right;
-	min-width: 85px;
+	/*min-width: 85px;*/
 }
 #login-container{
 	right: 0px;
@@ -450,8 +475,8 @@ main{
 }
 #logout-container{
 	position: absolute;
-	top: 26px;
-	right: 10px;
+	top: 6px;
+	right: 50px;
 }
 .logout{
 	cursor: pointer;
@@ -459,11 +484,32 @@ main{
 	white-space: nowrap;
 	text-align: center;
 	position: relative;
-	margin-right: 5px;
-	top: -6px;
+	/*margin-right: 5px;*/
+	/*top: -6px;*/
 }
 #user-settings{
 	display: inline-block;
+	cursor: pointer;
+}
+#settings-container{
+	right: 0px;
+	font-size: 80%;
+	width: 150px;
+	height: auto;
+	position: absolute;
+	z-index: 50;
+	top: 49px;
+	background: linear-gradient(to bottom right, #0c4252, #06242d);
+	/*background: #06242d;*/
+	border: 1px solid white;
+	display: none;
+	color: white;
+	padding: 12px;	
+}
+#settings-container span{
+	display: inline-block;
+	width: 100%;
+	height: 24px;
 	cursor: pointer;
 }
 #flag-container{
@@ -473,6 +519,14 @@ main{
 }
 .flag{
 	cursor: pointer;
+}
+#social-container span a{
+	text-decoration: none;
+}
+#social-container{
+	position: absolute;
+	top: 6px;
+	right:90px;
 }
 .field-text{
 	display: inline-block;
@@ -533,8 +587,8 @@ main{
 .registration-time-left-container,
 .registration-success-container
 {
-	position: absolute;
-	margin-top:70px;
+	/*position: absolute;*/
+	margin-top:50px;
 	margin-left: auto;
 	margin-right: auto;
 	left: 0;
@@ -548,8 +602,8 @@ main{
 
 .registration-limit-over-container
 {
-	position: absolute;
-	margin-top:70px;
+	/*position: absolute;*/
+	margin-top:50px;
 	margin-left: auto;
 	margin-right: auto;
 	left: 0;
@@ -563,8 +617,8 @@ main{
 
 .registration-waiting-container
 {
-	position: absolute;
-	margin-top:70px;
+	/*position: absolute;*/
+	margin-top:50px;
 	margin-left: auto;
 	margin-right: auto;
 	left: 0;
@@ -573,6 +627,21 @@ main{
 	font-size:calc(1.0rem + 1.3vw);
 	background-color: #f4bf42;
 	padding:10px;
+	color:white;
+}
+
+.a-guest-data-container{
+	background-color: #eeeaea;
+	border:1px solid #d2d0d0;
+	margin: 0px;
+	padding:10px;
+	width: 100%;
+}
+
+.a-guest-data-header{
+	background-color: #d0def4;
+	padding:10px;
+	margin: 0px;
 	color:white;
 }
 
@@ -797,7 +866,7 @@ main .news-container .author
 }
 
 #show-add-team-form-btn{
-	margin: 10px 0 50px 10px;
+	margin: 10px 0 10px 10px;
 }
 /*************************** Gallery *****************************************/
 
@@ -861,7 +930,7 @@ footer{
 }
 
 footer .sponsors{
-	width:100%;
+	/*width:100%;*/
 	clear:both;
 	margin:auto;
 }
@@ -884,7 +953,7 @@ footer .copyright{
 	text-align: center;
 }
 
-@media (max-width:640px){
+@media (max-width:1024px){
 	#wrapper{
 		background-position: 60%;
 	}
@@ -901,6 +970,11 @@ footer .copyright{
 	#north-pointer{
 		display: none;
 	}
+	#competition-name{
+		position: relative;
+		top: 0;
+		background-color: #112233;
+	}
 	#soldier{
 		display: none;
 		/*
@@ -912,7 +986,7 @@ footer .copyright{
 	}
 	nav{
 		height: auto;
-		z-index: 10;
+		z-index: 500;
 	}
 	#hamburger-menu{
 		cursor: pointer;
@@ -943,7 +1017,7 @@ footer .copyright{
 		background-position: center;
 		width: 100%;
 	}
-	#show-login-btn, #logout-container{
+	/*#show-login-btn, #logout-container{
 		position: static;
 		width: 100%;
 		display: none;
@@ -951,18 +1025,18 @@ footer .copyright{
 		font-size: calc(0.5rem + 1vw);
 		font-weight: normal;
 		line-height: 35px;
-	}
+	}*/
 	.logout{
 		font-size: calc(0.5rem + 1vw);
 		top: 0;
 	}
-	#user-settings{
-		position: relative;
-		top: 4px;
-	}
-	#login-container{
+	
+	#login-container, #settings-container{
 		position: static;
 		width: 100%;
+	}
+	#login-container, #settings-container{
+		padding-left: 30px;
 	}
 	#message{
 		position: static;
@@ -982,12 +1056,10 @@ footer .copyright{
 		background-size: cover;
 		background-position: center;
 	}
+	footer{
+		display: none;
+	}
 }
 
-@media (max-width:992px) and (min-width:601px)
-{
-	#hun-text{
-		display: none;
-	}	
-}
+
 

@@ -201,6 +201,17 @@ class CommonUser extends User
 		return $html;
 	}
 
+	public function getGuestComboBox()
+	{
+		$html = "<select id='guest_number' name='guest_number'>";
+		for($i = 0; $i <= $this->MAX_GUEST_NB; $i++)
+		{
+			$html .= "<option value='".$i."'>".$i." fő</option>";
+		}
+		$html .= "</select>";
+		return $html;
+	}
+
 	public function getCompetitionDistanceComboBox($competitionID)
 	{
 		$html = "<select id='comp_dist' name='comp_dist'>";
@@ -520,8 +531,8 @@ class CommonUser extends User
 		}
 		catch (Exception $e) 
 		{		
-			echo 'failed_mail'.$e;
-			return 0;
+			//echo 'failed_mail'.$e;
+			//return 0;
 		}
 	}
 
@@ -539,16 +550,22 @@ class CommonUser extends User
 
 		switch ($lang) {
 			case 'hu':
-				$html .= "<span user_id='".$this->userID."' class='logout'>Kijelentkezés: ".$row["username"]."</span>";
+				//$html .= "<span user_id='".$this->userID."' class='logout'>Kijelentkezés: ".$row["username"]."</span>";
+				$html .= '<img src="img/common/logout-icon.png" id="setting-menu-btn" class="logout" user_id="'.$this->userID.'" alt="Kijelentkezés - '.$row["username"].'" title="Kijelentkezés - '.$row["username"].'">';
 				break;
 			case 'en':
-				$html .= "<span user_id='".$this->userID."' class='logout'>Logout: ".$row["username"]."</span>";
+				//$html .= "<span user_id='".$this->userID."' class='logout'>Logout: ".$row["username"]."</span>";
+				$html .= '<img src="img/common/logout-icon.png" id="logout" class="logout" user_id="'.$this->userID.'" alt="Logout - '.$row["username"].'" title="Logout - '.$row["username"].'">';
 				break;
 			case 'de':
 				$html .= "<span user_id='".$this->userID."' class='logout'>Ausmelden: ".$row["username"]."</span>";
 				break;
 		}
-		$html .= "<span id='user-settings'><img src='img/tooth-wheel.png'></span>";
+		//$html .= "<span id='user-settings'><img src='img/tooth-wheel.png'></span>";
+		$html .= "</div>";
+		$html .= '<div id="settings-container">';
+		$html .= '<span id="user-settings">Beállítások</span>';
+		$html .= '<span class="logout-btn">Kijelentkezés</span>';
 		$html .= "</div>";
 		
 		return $html;

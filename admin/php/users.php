@@ -6,8 +6,8 @@ public function initMenuArray()
 public function check_authority($menu)
 public function createFolders($linkedTo)
 public function deleteUser()
-public function updateUser($lastname,$firstname,$phone,$username,$password,$confirm_password)
-public function addUser($lastname,$firstname,$phone,$username,$password,$confirm_password)
+public function updateUser($lastname,$firstname,$phone,$username,$password,$confirm_password, $isAdmin)
+public function addUser($lastname,$firstname,$phone,$username,$password,$confirm_password, $isAdmin)
 public function checkUsername($username,$isEdit=false)
 private function userIsAdmin($userID)
 private function getUsersComboBox($toID)
@@ -102,8 +102,9 @@ class User extends Config
 		return "failed_database";
 	}
 
-	public function updateUser($lastname,$firstname,$phone,$username,$password,$confirm_password)
+	public function updateUser($lastname,$firstname,$phone,$username,$password,$confirm_password, $isAdmin)
 	{
+		echo "alma: ".$isAdmin;
 		if($this->checkUsername($username,1) == "true" && $password == $confirm_password)
 		{
 			$password = crypt($password,$this->SALT);
@@ -113,16 +114,18 @@ class User extends Config
 												password = ?,
 												firstname = ?,
 												lastname = ?,
-												phone = ? 
+												phone = ?,
+												admin = ? 
 											WHERE id = ?"
 					 ))
 			{
-				$stmt->bind_param('sssssi', 	
+				$stmt->bind_param('sssssii', 	
 							$username,
 							$password,
 							$firstname,
 							$lastname,
 							$phone,
+							$isAdmin,
 							$this->userID);
 				$stmt->execute();
 				return "success_user_update";
@@ -138,7 +141,7 @@ class User extends Config
 		}	
 	}
 
-	public function addUser($lastname,$firstname,$phone,$username,$password,$confirm_password)
+	public function addUser($lastname,$firstname,$phone,$username,$password,$confirm_password, $isAdmin)
 	{
 		if($this->checkUsername($username) == "true" && $password == $confirm_password)
 		{
@@ -148,17 +151,19 @@ class User extends Config
 									 password,
 									 firstname,
 									 lastname,
-									 phone
+									 phone,
+									 admin
 									) 
-								VALUES (?,?,?,?,?)"
+								VALUES (?,?,?,?,?,?)"
 					 ))
 			{
-				$stmt->bind_param('sssss', 	
+				$stmt->bind_param('sssssi', 	
 							$username,
 							$password,
 							$firstname,
 							$lastname,
-							$phone);
+							$phone,
+							$isAdmin);
 				$stmt->execute();
 				return "success_user_add";
 			}
@@ -212,12 +217,13 @@ class User extends Config
 		else return -1;
 	}
 
-	private function getUsersComboBox($toID)
+	private function getUsersComboBox($toID, $admin=0)
 	{
 		$usersComboBox = "<select id='users-combobox-".$toID."' class='users-combobox'>";
 		$usersComboBox .= "<option value='0'>Válasszon</option>";
-		if ($stmt = $this->db->prepare("SELECT * from user"))
+		if ($stmt = $this->db->prepare("SELECT * FROM user WHERE admin=?"))
 		{
+			$stmt->bind_param("i", $admin);
 			$stmt->execute();
 			$result = $stmt->get_result();
 			while ($row = $result->fetch_assoc()) {
@@ -353,7 +359,7 @@ class User extends Config
 		$html .= "<form id='authorityUserForm'>";
 		$html .= "<fieldset>";
 		$html .= "<legend>Felhasználó jogosultságok</legend>";
-		$html .= $this->getUsersComboBox("authority");
+		$html .= $this->getUsersComboBox("authority", 1);
 		$html .= $this->userID?$this->getUsersMenuAuthorityList():"";
 		$html .= "</fieldset>";
 		$html .= "</form>";
@@ -514,7 +520,7 @@ class User extends Config
 		$html .= "<form id='userForm'>";
 		$html .= "<fieldset>";
 		$html .= "<legend>".$title."</legend>";
-		$html .= $userComboBox?"<label for='users'>Felhasználók:</label>".$this->getUsersComboBox("data"):"";
+		$html .= $userComboBox?"<label for='users'>Felhasználók:</label>".$this->getUsersComboBox("data", 1):"";
 		$html .= "<label for='last_name'>Vezetéknév</label>";
 		$html .= "<input type='text' id='lastname' name='lastname' ".$disabled." value='".($val=$dataShow?$row["lastname"]:"")."' placeholder='Vezetéknév..'>";
 		$html .= "<label for='first_name'>Keresztnév</label>";
@@ -531,6 +537,12 @@ class User extends Config
 			$html .= "<label for='confirm_password'>Jelszó újra</label>";
 			$html .= "<input type='password' id='confirm_password' name='confirm_password' placeholder='Jelszó újra..'>";
 		}
+
+		$checked = "";
+		if ($dataShow) $checked = $row["admin"] ? " checked" : "";
+
+		$html .= "<input type='checkbox' id='isAdmin' name='isAdmin' ".$disabled.$checked." value='1' placeholder='Admin felhasználó..'>";
+		$html .= "<label for='isAdmin'>Admin</label>";
 		$html .= "<input type='submit' value='".$btnCaption."'>";
 		$html .= "</fieldset>";
 		$html .= "</form>";

@@ -49,7 +49,7 @@ function initPage()
 		data = jQuery.parseJSON(data);
 		if(data.state == 'login')
 		{
-			$('#content').html(data.content);
+			$('#content-container').html(data.content);
 			
 			$("#loginForm").validate({
 				rules: {
@@ -100,7 +100,7 @@ function initPage()
 		else
 		{
 			$('nav').html(data.content);
-			$('#content').html("");
+			$('#content-container').html("");
 
 			var menu = window.location.hash.replace('#','');
 			menu = menu.length?menu:'Home';
@@ -108,7 +108,7 @@ function initPage()
 			$('#logout-container').remove();
 			$('#show-login-btn').remove();
 			$('header').before(data.logout);
-			$(".logout").slideDown({	}, { duration: 200, queue: false});
+			$(".logout-btn").slideDown({	}, { duration: 200, queue: false});
 		}
 		
 	});	
@@ -162,15 +162,11 @@ function showMessage(msg,onTop=1)
 	$('#message').show();
 }
 
-
 function show_article_title(menu)
 {
 	
 	if (!$(".tile[menu=" + menu + "]").length) {return}
 	var title = "<h1>"+$(".tile[menu=" + menu + "]").find('.caption').html() +"</h1>";
-
-	if ( $('.banner-image').length ) 
-		$('.banner-image').after(title);
 }
 
 function show_menu(menu)
@@ -202,6 +198,55 @@ function show_menu(menu)
 			}, { duration: 200, queue: false});
 		}
 	}
+}
+
+function setEnvironment(compId){
+	if (compId == '') 
+	{
+		compId = "default";
+		$('#competition-name').hide();
+		if ($('#information-box').is(':hidden')) $('#information-box').show();
+	}
+	else
+	{
+		$('#competition-name').show();
+		if ($('#information-box').is(':visible')) $('#information-box').hide();
+	}	
+	var competitionName = "";
+	var facebook, mailto, logo, promoMedia;
+	
+	$.each(competitionsArray, function(index, competition){
+		if (competition.id == compId){
+			competitionName = competition.name;
+			facebook = competition.facebookLink;
+			mailto = competition.mailto;
+			logo = competition.logo;
+			promoMedia = competition.promoMedia;
+			return;
+		} 
+	});
+
+	$("#competition-name").html(competitionName);
+	$("#facebook a").prop("href", facebook);
+	$("#mailto a").prop("href", "mailto:"+mailto);
+	$('#logo').css("background-image", "url("+logo+")");
+
+	for (var i = 0; i < 3; i++) {
+		var i2 = i+1;
+		var filename =  promoMedia[i];
+		var extension = filename.substr( (filename.lastIndexOf('.') +1) );
+
+		switch(extension){
+			case "jpg":
+			case "png":
+			case "gif":
+				$("#box"+i2).html('<img src="'+filename+'">');
+			break;
+			case "mp4":
+				$("#box"+i2).html('<video autoplay loop muted><source src="'+filename+'" type="video/mp4"></video>');
+		}
+	}
+
 }
 
 function get_content(menu,param,isHistory, target='main')
@@ -265,7 +310,8 @@ function get_content(menu,param,isHistory, target='main')
 					url = url + '&page=ShowChangeLanguage';
 				break;
 
-				case linked_to + 'Msr' + instanceOf:	
+				case linked_to + 'Msr' + instanceOf:
+					
 					url = url + '&page=showMsr';
 				break;
 
@@ -291,6 +337,14 @@ function get_content(menu,param,isHistory, target='main')
 
 				case linked_to + 'UsersAuthority' + instanceOf:
 					url = url + '&page=showUsersAuthority';
+				break;
+
+	// ******************************************************************************
+	// *                             Támogatók kezelése                             *
+	// ******************************************************************************
+				
+				case linked_to + 'Donation' + instanceOf:
+					url = url + '&page=showDonation';
 				break;
 
 	// ******************************************************************************
@@ -362,142 +416,17 @@ function get_content(menu,param,isHistory, target='main')
 	// ******************************************************************************
 
 
-				case linked_to + 'StoryWrite' + instanceOf:
 				case linked_to + 'Story' + instanceOf:
 					url = url + '&page=showStory';
 				break;
 
-				case linked_to + 'StorySaveBtn' + instanceOf:
-
-					if($('#storyEditorTabs').length)
-					{
-
-						var data = [];
-						data.push({name: "document_linked_to", value: $("#documentForm").attr("linked_to")});
-						data.push({name: "document_instance_of", value: $("#documentForm").attr("instance_of")});
-						
-						for(name in CKEDITOR.instances)
-						{
-							var lang = name.substr(name.indexOf('-') + 1);
-							data.push({name: "story_content[" + lang + "]", value: CKEDITOR.instances[name].getData()});
-						}
-											
-
-						$("#documentForm.document_attachment:checked").each(function(){
-						    data.push({name: "file_id[]", value: $(this).attr('file_id')});
-						});
-
-						url += '&page=showStory';
-						param += '&'+$.param(data);
-					}
-					else
-					{
-						menu =  linked_to + 'Story' + instanceOf;
-						url = url + '&page=showStory';
-					}
-				break;
-
-				case linked_to + 'StoryDelete' + instanceOf:
-					if($("#time-combobox").length && $("#time-combobox").val() != '-1')
-					{
-						$.confirm({
-								title: 'Törlés',
-								boxWidth: '30%',
-								useBootstrap: false,
-								content: 'Biztosan törli a bejegyzést?',	
-								buttons: {
-									confirm: {
-										text: 'Igen',
-										action: function(){
-											var data = [];
-											data.push({name: "story_id", value: $("#time-combobox").val()});
-											get_content(linked_to + 'StoryDeleteConfirmed' + instanceOf,$.param(data),1);
-										}
-									},
-									cancel: {
-										text: 'Mégsem',
-										
-									}
-								}
-							});
-					} else showMessage('empty_selected_in_list');
-					return;
-				break;
-
-				case linked_to + 'StoryDeleteConfirmed' + instanceOf:
-					menu =  linked_to + 'StoryDelete' + instanceOf;
-					url = url + '&page=showStory';
-				break;
-
+				
 	// ******************************************************************************
 	// *                             Akadályok menü                               *
 	// ******************************************************************************
 
 
-				case linked_to + 'CompetitionObstaclesWrite' + instanceOf:
 				case linked_to + 'CompetitionObstacles' + instanceOf:
-					url = url + '&page=showCompetitionObstacles';
-				break;
-
-				case linked_to + 'CompetitionObstaclesSaveBtn' + instanceOf:
-
-					if($('#obstaclesEditorTabs').length)
-					{
-
-						var data = [];
-						data.push({name: "document_linked_to", value: $("#documentForm").attr("linked_to")});
-						data.push({name: "document_instance_of", value: $("#documentForm").attr("instance_of")});
-						
-						for(name in CKEDITOR.instances)
-						{
-							var lang = name.substr(name.indexOf('-') + 1);
-							data.push({name: "obstacles_content[" + lang + "]", value: CKEDITOR.instances[name].getData()});
-						}
-											
-
-						$("#documentForm.document_attachment:checked").each(function(){
-						    data.push({name: "file_id[]", value: $(this).attr('file_id')});
-						});
-
-						url += '&page=showCompetitionObstacles';
-						param += '&'+$.param(data);
-					}
-					else
-					{
-						menu =  linked_to + 'CompetitionObstacles' + instanceOf;
-						url = url + '&page=showCompetitionObstacles';
-					}
-				break;
-
-				case linked_to + 'CompetitionObstaclesDelete' + instanceOf:
-					if($("#time-combobox").length && $("#time-combobox").val() != '-1')
-					{
-						$.confirm({
-								title: 'Törlés',
-								boxWidth: '30%',
-								useBootstrap: false,
-								content: 'Biztosan törli a bejegyzést?',	
-								buttons: {
-									confirm: {
-										text: 'Igen',
-										action: function(){
-											var data = [];
-											data.push({name: "obstacles_id", value: $("#time-combobox").val()});
-											get_content(linked_to + 'CompetitionObstaclesDeleteConfirmed' + instanceOf,$.param(data),1);
-										}
-									},
-									cancel: {
-										text: 'Mégsem',
-										
-									}
-								}
-							});
-					} else showMessage('empty_selected_in_list');
-					return;
-				break;
-
-				case linked_to + 'CompetitionObstaclesDeleteConfirmed' + instanceOf:
-					menu =  linked_to + 'CompetitionObstaclesDelete' + instanceOf;
 					url = url + '&page=showCompetitionObstacles';
 				break;
 
@@ -507,70 +436,7 @@ function get_content(menu,param,isHistory, target='main')
 	// ******************************************************************************
 
 
-				case linked_to + 'CompetitionFieldDescriptionWrite' + instanceOf:
 				case linked_to + 'CompetitionFieldDescription' + instanceOf:
-					url = url + '&page=showCompetitionFieldDescription';
-				break;
-
-				case linked_to + 'CompetitionFieldDescriptionSaveBtn' + instanceOf:
-
-					if($('#fieldDescriptionEditorTabs').length)
-					{
-
-						var data = [];
-						data.push({name: "document_linked_to", value: $("#documentForm").attr("linked_to")});
-						data.push({name: "document_instance_of", value: $("#documentForm").attr("instance_of")});
-						
-						for(name in CKEDITOR.instances)
-						{
-							var lang = name.substr(name.indexOf('-') + 1);
-							data.push({name: "field_description_content[" + lang + "]", value: CKEDITOR.instances[name].getData()});
-						}
-											
-
-						$("#documentForm.document_attachment:checked").each(function(){
-						    data.push({name: "file_id[]", value: $(this).attr('file_id')});
-						});
-
-						url += '&page=showCompetitionFieldDescription';
-						param += '&'+$.param(data);
-					}
-					else
-					{
-						menu =  linked_to + 'CompetitionFieldDescription' + instanceOf;
-						url = url + '&page=showCompetitionFieldDescription';
-					}
-				break;
-
-				case linked_to + 'CompetitionFieldDescriptionDelete' + instanceOf:
-					if($("#time-combobox").length && $("#time-combobox").val() != '-1')
-					{
-						$.confirm({
-								title: 'Törlés',
-								boxWidth: '30%',
-								useBootstrap: false,
-								content: 'Biztosan törli a bejegyzést?',	
-								buttons: {
-									confirm: {
-										text: 'Igen',
-										action: function(){
-											var data = [];
-											data.push({name: "field_description_id", value: $("#time-combobox").val()});
-											get_content(linked_to + 'CompetitionFieldDescriptionDeleteConfirmed' + instanceOf,$.param(data),1);
-										}
-									},
-									cancel: {
-										text: 'Mégsem',
-										
-									}
-								}
-							});
-					} else showMessage('empty_selected_in_list');
-					return;
-				break;
-
-				case linked_to + 'CompetitionFieldDescriptionDeleteConfirmed' + instanceOf:
-					menu =  linked_to + 'CompetitionFieldDescriptionDelete' + instanceOf;
 					url = url + '&page=showCompetitionFieldDescription';
 				break;
 
@@ -584,8 +450,6 @@ function get_content(menu,param,isHistory, target='main')
 				break;
 
 				
-
-				
 	// ******************************************************************************
 	// *                             Versenyinfó menü                               *
 	// ******************************************************************************
@@ -594,7 +458,6 @@ function get_content(menu,param,isHistory, target='main')
 					url = url + '&page=showCompetitionInfo';
 				break;
 				
-
 
 	// ******************************************************************************
 	// *                         Verseny megközelíthetőség menü                     *
@@ -612,86 +475,7 @@ function get_content(menu,param,isHistory, target='main')
 					url = url + '&page=showEntry'; 
 				break;
 
-
-	// ******************************************************************************
-	// *                             Mappakezelés                                   *
-	// ******************************************************************************
-
-				case linked_to + 'FolderDeleteConfirmed' + instanceOf:
-					menu = linked_to +'FolderDeleteBtn' + instanceOf;
-					url = url + '&page=showUploadManagerDeleteFolders';
-				break;
-
-				
-				case linked_to + 'Folders' + instanceOf:
-					menu = linked_to + 'FolderAdd' + instanceOf;
-				case linked_to + 'FolderAdd' + instanceOf:
-					url = url + '&page=showUploadManagerAddFolderForm';
-				break;
-
-				case linked_to + 'FolderModifyForm' + instanceOf:
-					url = url + '&page=showUploadManagerFolderList';
-				break;
-
-				case linked_to + 'FolderModify' + instanceOf:
-					menu = linked_to + 'FolderModifyForm' + instanceOf;
-					url = url + '&page=showUploadManagerAddFolderForm';
-				break;
-
-
-	// ******************************************************************************
-	// *                             Fájlkezelés                                    *
-	// ******************************************************************************
-
-				case linked_to + 'Files' + instanceOf:
-					menu = linked_to + 'FileUploadForm' + instanceOf;				
-				case linked_to + 'FileUploadForm'+ instanceOf:
-					url += '&page=showUploadManagerFileUpload';
-				break;
-
-				case linked_to + 'FileModifyForm' + instanceOf:
-					url += '&page=showUploadManagerFileModify';
-				break;
-				
-				case linked_to + 'FileUploadBtn' + instanceOf:
-					return;
-				break;
-
-				case linked_to + 'FileDeleteForm' + instanceOf:
-					url = url + '&page=showUploadManagerDeleteFiles';
-				break;
-
-				case linked_to + 'FileDeleteBtn' + instanceOf:
-					if ( $('.file_selector:checked').length > 0 ){
-						$.confirm({
-							title: 'Törlés',
-							boxWidth: '30%',
-							useBootstrap: false,
-							content: 'Biztosan törli a képe(ke)t?',	
-							buttons: {
-								confirm: {
-									text: 'Igen',
-									action: function(){
-										var data = $('#fileListForm').serializeArray();
-										data.push({name:'folderId', value: $('#folder_selector').val()});
-										
-										get_content(linked_to + 'FileDeleteConfirmed' + instanceOf,$.param(data),1);
-									}
-								},
-								cancel: {
-									text: 'Mégsem',
-									
-								}
-							}
-						});
-					}						
-					return;
-				break;
-
-				case linked_to + 'FileDeleteConfirmed' + instanceOf:
-					menu = linked_to + 'FileDeleteBtn' + instanceOf;
-					url = url + '&page=showUploadManagerDeleteFiles';
-				break;
+	
 				default:			
 					
 				break;
@@ -748,6 +532,17 @@ function load_content(url)
 			var teamID = getUrlParameter('teamID',url);
 			var action = getUrlParameter('action',url);
 
+			
+			var envCompetitionId = linked_to;
+			$.each(competitionsArray, function(index, competition){
+				if (competition.id == menu.toLowerCase()) {
+					envCompetitionId = menu.toLowerCase();
+					return;
+				}
+			});
+
+			setEnvironment(envCompetitionId);
+			
 			data = jQuery.parseJSON(data);
 			
 			if (data.logout && target == 'main')
@@ -770,14 +565,33 @@ function load_content(url)
 							$("#information-box .content").append(data.content);
 							$('.info-entry').click(function(){
 								get_content($(this).attr("linkedto") + "Entry","",0);
+								$('#information-box .open-close').removeClass('close');
+								$('#information-box .open-close').addClass('open');
+								$('#information-box').animate({left:"-=178"}, 100); 
 							});
+
 						break;
 
 					}
 				break;
 
 				case 'main':
-					
+
+					$(".banner-image").remove();
+
+					if(!$("#content").length)
+					{
+						var $content = $('<div>', {'id': 'content'});
+						$('#content-container').append($content);
+					}
+
+					if(data.banner)
+					{
+						
+						var $bannerImage = $('<div>', {'class': 'banner-image'+' ' + data.banner});
+						$('#content').before($bannerImage);
+					}
+
 					if(data.content && data.append) { $('#content').append(data.content); }	
 					else if(data.content) 
 					{ 
@@ -786,16 +600,15 @@ function load_content(url)
 							if (data.document) 
 							{
 								$('#content').append('<div id="right-side-bar"><span>'+$.validator.messages["attached_documents"]+'</span>'+data.document+'</div>')	
-								if ($('#hamburger-menu').is(':visible')) $('.sub-content').width('90%');
-								else $('.sub-content').width('70%');
+								
 							}
 
-							$('#content').slideDown();
+							$('#content-container').slideDown();
 					}	
 
 					if (data.news_search_form)
 					{
-						$('#content .sub-content').prepend(data.news_search_form);
+						$('#content-container .content').prepend(data.news_search_form);
 					}		
 	
 
@@ -849,14 +662,14 @@ function load_content(url)
 						case 'showChangePassword':
 							if (data.message=='success_password_change') 
 							{
-								$('#content').slideUp();
+								$('#content-container').slideUp();
 							}
 						break;
 
 						case 'showUserRemove':
 							$('#logout-container').remove();						
 							$('nav').append(data.login_container);
-							$('#content').slideUp();
+							$('#content-container').slideUp();
 						break;
 
 						case 'showUsersAdd':
@@ -1003,7 +816,7 @@ function load_content(url)
 											var data = $('#registration-form').serializeArray();
 											data.push({name: "action", value: "addCommonUser"});
 											get_content("UsersAdd",$.param(data),0);
-											$('#content').slideUp();
+											$('#content-container').slideUp();
 										}
 									}
 								});
@@ -1192,6 +1005,9 @@ function load_content(url)
 					
 						break;
 
+						case 'showDonation':
+					
+						break;
 						case 'showDocuments':
 
 						break;
@@ -1202,13 +1018,13 @@ function load_content(url)
 								get_content(linked_to + "GalleryAlbum" + instanceOf,"albumID="+$(this).attr("albumID"),0);
 								e.preventDefault(); 						 		
 							});
-							$('#content').css({"background-image":"url(img/common/military-wallpaper.jpg"});
+							$('#content-container').css({"background-image":"url(img/common/military-wallpaper.jpg"});
 						break;
 						case 'showGalleryAlbum':
 							
 
-							$('#content').empty();
-							$('#content').html(data.content);
+							$('#content-container').empty();
+							$('#content-container').html(data.content);
 							
 							if(!ImgGallery){
 								ImgGallery = $("#gallery").unitegallery({
@@ -1225,202 +1041,20 @@ function load_content(url)
 								  });
 							}
 							
-							$('#content').slideDown("slow");	
+							$('#content-container').slideDown("slow");	
 						break;
 
 						case 'showStory':
-							if (!data.story_combobox.length) return;
-							$('#content').empty();
-
-							if (!$('#time-combobox').length) 
-							{
-								$('#content').append("<div id='time-combobox-container'></div>");
-								$('#time-combobox-container').html(data.story_combobox);
-
-							}
-							else
-							{
-								$('#time-combobox-container').html(data.story_combobox);
-							}
-
-							$("#time-combobox").change(function(e){
-								get_content(linked_to + "StorySaveBtn" + instanceOf,"action=set_other&story_id=" + $("option:selected", this).val(),1);	
-								e.preventDefault();
-							});
-
-							if(!$('#storyEditorTabs').length)
-							{
-								var $storyEditorTabs = $('<div>', {'id': 'storyEditorTabs'});
-								$('#content').append($storyEditorTabs);
-								var tabTitle = "<ul>";
-								$.each(data.languages, function(key, name){
-									tabTitle += "<li><a href='#" + key + "'>" + name + "</a></li>";
-								});
-								tabTitle += "</ul>";
-								$storyEditorTabs.append(tabTitle);
-
-								$.each(data.languages, function(key, name){
-									if (!$('#storyEditor-' + key).length)
-									{
-										var $aTab = $('<div>', {'id': key});
-										var $storyEditor = $('<textarea>', {'id': 'storyEditor-' + key, 'class': 'editor'});								
-										$storyEditorTabs.append($storyEditor);
-										CKEDITOR.replace( 'storyEditor-' + key, {
-											extraPlugins: 'autogrow',
-											extraPlugins: 'imageuploader',
-											autoGrow_minHeight: 300,
-											autoGrow_maxHeight: 600,
-											autoGrow_bottomSpace: 50,
-											language: 'hu'
-										} );
-										
-										$aTab.append($storyEditor);
-										$storyEditorTabs.append($aTab);
-									}
-								});
-								$storyEditorTabs.tabs();
-							}
-							else
-							{
-								$('#storyEditorTabs').show();
-							}
-
-							if(data.story_content)
-							{
-								$.each(data.languages, function(key, name){	
-										CKEDITOR.instances[("storyEditor-" + key)].setData(data.story_content[key]);
-								});
-							}
+							
+							
 						break;
 
 						case 'showCompetitionObstacles':
-							if (!data.obstacles_combobox.length) return;
-							$('#content').empty();
-
-							if (!$('#time-combobox').length) 
-							{
-								$('#content').append("<div id='time-combobox-container'></div>");
-								$('#time-combobox-container').html(data.obstacles_combobox);
-
-							}
-							else
-							{
-								$('#time-combobox-container').html(data.obstacles_combobox);
-							}
-
-							$("#time-combobox").change(function(e){
-								get_content(linked_to + "CompetitionObstaclesSaveBtn" + instanceOf,"action=set_other&obstacles_id=" + $("option:selected", this).val(),1);	
-								e.preventDefault();
-							});
-
-							if(!$('#obstaclesEditorTabs').length)
-							{
-								var $obstaclesEditorTabs = $('<div>', {'id': 'obstaclesEditorTabs'});
-								$('#content').append($obstaclesEditorTabs);
-								var tabTitle = "<ul>";
-								$.each(data.languages, function(key, name){
-									tabTitle += "<li><a href='#" + key + "'>" + name + "</a></li>";
-								});
-								tabTitle += "</ul>";
-								$obstaclesEditorTabs.append(tabTitle);
-
-								$.each(data.languages, function(key, name){
-									if (!$('#obstaclesEditor-' + key).length)
-									{
-										var $aTab = $('<div>', {'id': key});
-										var $obstaclesEditor = $('<textarea>', {'id': 'obstaclesEditor-' + key, 'class': 'editor'});								
-										$obstaclesEditorTabs.append($obstaclesEditor);
-										CKEDITOR.replace( 'obstaclesEditor-' + key, {
-											extraPlugins: 'autogrow',
-											extraPlugins: 'imageuploader',
-											autoGrow_minHeight: 300,
-											autoGrow_maxHeight: 600,
-											autoGrow_bottomSpace: 50,
-											language: 'hu'
-										} );
-										
-										$aTab.append($obstaclesEditor);
-										$obstaclesEditorTabs.append($aTab);
-									}
-								});
-								$obstaclesEditorTabs.tabs();
-							}
-							else
-							{
-								$('#obstaclesEditorTabs').show();
-							}
-
-							if(data.obstacles_content)
-							{
-								$.each(data.languages, function(key, name){	
-										CKEDITOR.instances[("obstaclesEditor-" + key)].setData(data.obstacles_content[key]);
-								});
-							}
+							
 						break;
 
 						case 'showCompetitionFieldDescription':
-							if (!data.field_description_combobox.length) return;
-							$('#content').empty();
-
-							if (!$('#time-combobox').length) 
-							{
-								$('#content').append("<div id='time-combobox-container'></div>");
-								$('#time-combobox-container').html(data.field_description_combobox);
-
-							}
-							else
-							{
-								$('#time-combobox-container').html(data.field_description_combobox);
-							}
-
-							$("#time-combobox").change(function(e){
-								get_content(linked_to + "CompetitionFieldDescriptionSaveBtn" + instanceOf,"action=set_other&field_description_id=" + $("option:selected", this).val(),1);	
-								e.preventDefault();
-							});
-
-							if(!$('#fieldDescriptionEditorTabs').length)
-							{
-								var $fieldDescriptionEditorTabs = $('<div>', {'id': 'fieldDescriptionEditorTabs'});
-								$('#content').append($fieldDescriptionEditorTabs);
-								var tabTitle = "<ul>";
-								$.each(data.languages, function(key, name){
-									tabTitle += "<li><a href='#" + key + "'>" + name + "</a></li>";
-								});
-								tabTitle += "</ul>";
-								$fieldDescriptionEditorTabs.append(tabTitle);
-
-								$.each(data.languages, function(key, name){
-									if (!$('#fieldDescriptionEditor-' + key).length)
-									{
-										var $aTab = $('<div>', {'id': key});
-										var $fieldDescriptionEditor = $('<textarea>', {'id': 'fieldDescriptionEditor-' + key, 'class': 'editor'});								
-										$fieldDescriptionEditorTabs.append($fieldDescriptionEditor);
-										CKEDITOR.replace( 'fieldDescriptionEditor-' + key, {
-											extraPlugins: 'autogrow',
-											extraPlugins: 'imageuploader',
-											autoGrow_minHeight: 300,
-											autoGrow_maxHeight: 600,
-											autoGrow_bottomSpace: 50,
-											language: 'hu'
-										} );
-										
-										$aTab.append($fieldDescriptionEditor);
-										$fieldDescriptionEditorTabs.append($aTab);
-									}
-								});
-								$fieldDescriptionEditorTabs.tabs();
-							}
-							else
-							{
-								$('#fieldDescriptionEditorTabs').show();
-							}
-
-							if(data.field_description_content)
-							{
-								$.each(data.languages, function(key, name){	
-										CKEDITOR.instances[("fieldDescriptionEditor-" + key)].setData(data.field_description_content[key]);
-								});
-							}
+							
 						break;
 
 						case 'showCompetitionInfo':
@@ -1460,6 +1094,124 @@ function load_content(url)
 									$("#sign-up-btn").removeClass('blue1');
 									$("#sign-up-btn").addClass('blue2');
 								}
+							});
+
+							$("#guest_number").change(function(){
+								$('#guest-data-container').remove();
+								if($(this).val())
+								{
+									var $guestDataContainer = $('<div>', {'id': 'guest-data-container'});
+									var i;
+									for (i = 0; i < $(this).val(); i++)
+									{
+										var $guestData 				 = $('<div>', {'class': 'a-guest-data-container'});
+										var $guestDataHeader		 = $('<div>', {'class': 'a-guest-data-header','html':(i + 1) + '. kísérő adatai'});
+										var $guestDataEmailLabel 	 = $('<label>', {'class': 'guest-data-label','html':'Email-cím:'});
+										var $guestDataEmail 	 	 = $('<input>', {'id':'guest-data-email_' + i,'class': 'guest-data-email','type':'text','name':'guest_data['+ i +'][email]'});
+										var $guestDataLastNameLabel	 = $('<label>', {'class': 'guest-data-label','html': 'Vezetéknév:'});
+										var $guestDataLastName 		 = $('<input>', {'id':'guest-data-lastname_' + i,'class': 'guest-data-lastname','type':'text','name':'guest_data['+ i +'][lastname]'});
+										var $guestDataFirstNameLabel = $('<label>', {'class': 'guest-data-label','html':'Keresztnév:'});
+										var $guestDataFirstName 	 = $('<input>', {'id':'guest-data-firstname_' + i,'class': 'guest-data-firstname','type':'text','name':'guest_data['+ i +'][firstname]'});
+										var $guestDataBornNameLabel	 = $('<label>', {'class': 'guest-data-label','html':'Születési név:'});
+										var $guestDataBornName 		 = $('<input>', {'id':'guest-data-born-name_' + i,'class': 'guest-data-born-name','type':'text','name':'guest_data['+ i +'][bornname]'});
+										var $guestDataMotherNameLabel= $('<label>', {'class': 'guest-data-label','html':'Anyja neve:'});
+										var $guestDataMotherName 	 = $('<input>', {'id':'guest-data-mother_name_' + i,'class': 'guest-data-mothername','type':'text','name':'guest_data['+ i +'][mothername]'});
+										var $guestDataBornDateLabel	 = $('<label>', {'class': 'guest-data-label','html':'Születési dátum:'});
+										var $guestDataBornDate 	 	 = $('<input>', {'id':'guest-data-born-date_' + i,'class': 'guest-data-born-date','type':'text','name':'guest_data['+ i +'][borndate]'}); 
+										var $guestDataGenderLabel 	 = $('<label>', {'class': 'guest-data-label','html':'Neme:'});
+										var $guestDataGender 		 = $('<select>', {'class': 'guest-data','name':'guest_data['+ i +'][gender]'});
+										var $guestDataGenderMale	 = $('<option>', {'class': 'guest-data','value':'1','html':'Férfi'});
+										var $guestDataGenderFemale	 = $('<option>', {'class': 'guest-data','value':'2','html':'Nő'});
+										var $guestDataNationalityLabel = $('<label>', {'class': 'guest-data-label','html':'Állampolgárság:'});
+										var $guestDataNationality 	 = $('<input>', {'id':'guest-data-nationality_' + i,'class': 'guest-data-nationality','type':'text','name':'guest_data['+ i +'][nationality]'}); 
+										var $guestDataPIDLabel = $('<label>', {'class': 'guest-data-label','html':'Igazolvány száma:'});
+										var $guestDataPID 	 = $('<input>', {'id':'guest-data-pid_' + i,'class': 'guest-data-pid','type':'text','name':'guest_data['+ i +'][pid]'});
+										var $guestDataPIDTypeLabel = $('<label>', {'class': 'guest-data-label','html':'Igazolvány típusa:'});
+										var $guestDataPIDType 	 = $('<input>', {'id':'guest-data-pid-type_' + i,'class': 'guest-data-pid-type','type':'text','name':'guest_data['+ i +'][pid_type]'});
+										var $guestDataPhoneLabel = $('<label>', {'class': 'guest-data-label','html':'Telefonszám:'});
+										var $guestDataPhone 	 = $('<input>', {'id':'guest-data-phone_' + i,'class': 'guest-data-phone','type':'text','name':'guest_data['+ i +'][phone]'});
+										var $guestDataAutoLabel = $('<label>', {'class': 'guest-data-label','html':'Gépjármű rendszáma, típusa:'});
+										var $guestDataAuto 	 = $('<input>', {'id':'guest-data-auto_' + i,'class': 'guest-data-auto','type':'text','name':'guest_data['+ i +'][auto_data]'});
+										var $guestDataZIPLabel = $('<label>', {'class': 'guest-data-label','html':'Irányítószám:'});
+										var $guestDataZIP 	 = $('<input>', {'id':'guest-data-zip_' + i,'class': 'guest-data-zip','type':'text','name':'guest_data['+ i +'][zip]'});
+										var $guestDataCityLabel = $('<label>', {'class': 'guest-data-label','html':'Település:'});
+										var $guestDataCity 	 = $('<input>', {'id':'guest-data-city_' + i,'class': 'guest-data-city','type':'text','name':'guest_data['+ i +'][city]'});
+										var $guestDataAddressLabel = $('<label>', {'class': 'guest-data-label','html':'Cím (utca,hszám):'});
+										var $guestDataAddress 	 = $('<input>', {'id':'guest-data-address_' + i,'class': 'guest-data-address','type':'text','name':'guest_data['+ i +'][address]'});
+										var $guestDataERNameLabel = $('<label>', {'class': 'guest-data-label','html':'Baleset esetén értesítendő neve:'});
+										var $guestDataERName 	 = $('<input>', {'id':'guest-data-er-name_' + i,'class': 'guest-data-er-name','type':'text','name':'guest_data['+ i +'][er_name]'});
+										var $guestDataERPhoneLabel = $('<label>', {'class': 'guest-data-label','html':'Baleset esetén értesítendő telefonszáma:'});
+										var $guestDataERPhone 	 = $('<input>', {'id':'guest-data-er-phone_' + i,'class': 'guest-data-er-phone','type':'text','name':'guest_data['+ i +'][er_phone]'});
+
+										$guestDataGender.append($guestDataGenderMale,$guestDataGenderFemale);
+										$guestData.append(			
+																	$guestDataHeader,
+																	$guestDataEmailLabel,$guestDataEmail,
+																	$guestDataLastNameLabel,$guestDataLastName,
+																	$guestDataFirstNameLabel,$guestDataFirstName,
+																	$guestDataBornNameLabel,$guestDataBornName,
+																	$guestDataMotherNameLabel,$guestDataMotherName,
+																	$guestDataBornDateLabel,$guestDataBornDate,
+																	$guestDataGenderLabel,$guestDataGender,
+																	$guestDataNationalityLabel,$guestDataNationality,
+																	$guestDataPIDLabel,$guestDataPID,
+																	$guestDataPIDTypeLabel,$guestDataPIDType,
+																	$guestDataPhoneLabel,$guestDataPhone,
+																	$guestDataAutoLabel,$guestDataAuto,
+																	$guestDataZIPLabel,$guestDataZIP,
+																	$guestDataCityLabel,$guestDataCity,
+																	$guestDataAddressLabel,$guestDataAddress,
+																	$guestDataERNameLabel,$guestDataERName,
+																	$guestDataERPhoneLabel,$guestDataERPhone
+																	);
+										$guestDataContainer.append($guestData);
+									}								
+								}
+								$(this).after($guestDataContainer);
+								
+								$('.guest-data-phone, .guest-data-er-phone').mask("99/999-9999");
+								$('.guest-data-born-date').mask("9999-99-99");
+
+								$('.guest-data-email').each(function() {
+									
+								    $(this).rules('add', {
+								        required: true,
+								        email: true
+								    });
+								});
+
+								$('.guest-data-phone, .guest-data-er-phone').each(function() {
+									
+								    $(this).rules('add', {
+								        required: true,
+								        phone: true
+								    });
+								});
+
+								$('.guest-data-firstname, .guest-data-lastname, ' +
+									'.guest-data-mothername, .guest-data-born-date,' + 
+									' .guest-data-pid, .guest-data-pid-type, .guest-data-phone,' + 
+									' .guest-data-zip, .guest-data-city, .guest-data-address,' +
+									' .guest-data-er-name, .guest-data-er-phone').each(function() {
+									
+								    $(this).rules('add', {
+								        required: true
+								    });
+								});
+
+								$('.guest-data-zip').blur(function(event){
+								if ( $(this).val() != '' ) {
+									var $this = $(this);
+									$.get('php/get_city_from_zip.php',{'zip':$(this).val()}, function(data){
+										var x = $this;
+										var target = event.target;
+										$(target).parent().find('.guest-data-city').val(data);
+									});		
+								}
+
+
+							});
+
 							});
 							
 							$('#resend_competition_registration_email').click(function(){
@@ -1559,6 +1311,8 @@ function load_content(url)
 								});
 							}
 
+							
+
 							if ($('#add-team-form').length) 
 							{
 								$('#add-team-form').validate({
@@ -1579,7 +1333,9 @@ function load_content(url)
 										        }
 										},
 										"teamates[]": {
-											required: true,
+											required:  function(element){
+												return element.getAttribute('id') == 'teamate1';
+											},
 											remote: {
 										        url: "php/main.php",
 										        type: "get",
@@ -1619,7 +1375,7 @@ function load_content(url)
 								
 								$('#add-team-form').slideDown(
 									function(){
-										$('#content').animate({scrollTop: 1000}, 2000);
+										$('#content-container').animate({scrollTop: 1000}, 2000);
 										$('#team-name').selectRange(0,0);
 									}
 								);								
@@ -1731,6 +1487,7 @@ function load_content(url)
 $(document).ready(function(){
 	
 	"use strict";
+
 	/* TARGET Animation start */
 	/*
 	(function ($) { 
@@ -1898,6 +1655,11 @@ $(document).ready(function(){
 		});	
 	*/
 	/* TARGET Animation end */
+
+	if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+		$('#box-container').hide();
+	}
+
 	var start_page = window.location.hash.replace('#','');
 	get_content('LoadMenuItems','&start_page='+start_page,1,'nav');
 
@@ -1911,18 +1673,18 @@ $(document).ready(function(){
 	
 	$('body').on('click', '.tile', function(e) {	
 
-		if ($(this).hasClass("selected") && $( "#content" ).is(":visible"))
+		if ($(this).hasClass("selected") && $( "#content-container" ).is(":visible"))
 		{
-			$( "#content" ).slideUp( "slow");
+			$( "#content-container" ).slideUp( "slow");
 			$('.tile').removeClass('selected');	
 		}
 		else
 		{
 			$('.tile').removeClass('selected');		
-			$('#content').fadeOut(800);
+			$('#content-container').fadeOut(800);
 			$(this).addClass("selected");
 			get_content($(this).attr('menu'),'',0);
-			$('#content').css({"background-image":""});
+			$('#content-container').css({"background-image":""});
 			if ( $('#hamburger-menu').is(':visible') && 
 				!$(".menu-container[menu=" + $(this).attr('menu') + "]").length && 
 				$(this).attr('menu') != "up") {
@@ -1936,7 +1698,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$('body').on('click', '.open-close', function(e) {
+	$('body').on('click', '.open-close-container', function(e) {
 		if ($('#information-box .open-close').hasClass('close'))
 		{
 			$('#information-box .open-close').removeClass('close');
@@ -1958,7 +1720,7 @@ $(document).ready(function(){
 
 	$('body').on('click', '#register-btn', function(e) {	
 		get_content('UsersAdd','',0,'main');
-		$('#content').css({"background-image":""});	
+		$('#content-container').css({"background-image":""});	
 		if ( $('#hamburger-menu').is(':visible') ) 
 		{
 			$('#menu-box').slideUp("slow");
@@ -1971,16 +1733,23 @@ $(document).ready(function(){
 	});
 
 	$('body').on('click', '#show-login-btn', function(e) {
-		if (!$('.logout').length)
+		if (!$('.logout-btn').length)
 		{
 			$('#login-container').slideToggle({},{duration: 200, queue:false});
 			$('#login-message').hide();
 		}
 	});
+
+	$('body').on('click', '#setting-menu-btn', function(e) {
+		if (!$('.login-btn').length)
+		{
+			$('#settings-container').slideToggle({},{duration: 200, queue:false});
+		}
+	});
 	
 	$('body').on('click', '.flag', function(e) {
 		$('#lang').val($(this).attr('id'));
-		$('#content').css({"background-image":""});
+		$('#content-container').css({"background-image":""});
 		var lang = $(this).attr('id');
 
 		var start_page = window.location.hash.replace('#','');
@@ -2002,7 +1771,7 @@ $(document).ready(function(){
 
 	$('body').on('click', '#forgot-pw-btn', function(e) {
 
-		$('#content').css({"background-image":""});
+		$('#content-container').css({"background-image":""});
 		if ($('#username').val() != '')
 		{
 			get_content('ForgotPassword','username='+$('#username').val(),1,'login-container');
@@ -2016,20 +1785,21 @@ $(document).ready(function(){
 	});
 
 	$('body').on('click', '#user-settings', function(e) {	
-		$('#content').css({"background-image":""});
+		$('#content-container').css({"background-image":""});
 		get_content('UsersEdit','action=showRegisterForm',0,'main');	
+		$('#settings-container').hide();
 	});
 
 	$('body').on('click', '#hamburger-menu', function(e) {	
 		$('#menu-box').slideToggle('slow');
-		if ($('#logout-container').length)
+		/*if ($('#logout-container').length)
 		{
 			$('#logout-container').toggle();
 		}
-		else $('#show-login-btn').toggle();
+		else $('#show-login-btn').toggle();*/
 	});
 
-	$('body').on('click', '.logout', function(e) {	
+	$('body').on('click', '.logout-btn', function(e) {	
 		$.confirm({
 						title: $.validator.messages["confirm_logout_title"],
 						boxWidth: 'calc(1.2rem + 50vw)',
@@ -2044,7 +1814,8 @@ $(document).ready(function(){
 									});
 									if ( $('#hamburger-menu').is(':visible') ) {
 										$('#show-login-btn').show();
-									}												
+									}	
+									$('#settings-container');											
 								}
 							},
 							cancel: {

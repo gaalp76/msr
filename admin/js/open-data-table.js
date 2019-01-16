@@ -448,7 +448,7 @@
 					LocalsortType='ASC';
 				}
 				
-				var noRecPerPage = tl.prev('div').find('.odt-display-record').find("select").val();
+				var noRecPerPage = $('.odt-display-record').find("select").val();
 				tl.allSettings[2]=noRecPerPage;
 				tl.allSettings[3]=$(this).val();
 				tl.allSettings[4]=colno;
@@ -461,7 +461,7 @@
 
 			tl.prev('.odt-top').find('.odt-display-record').find("select").change(function()
 			{
-				var SearchData=tl.prev('div').find('.odt-search').val();
+				var SearchData=$('.odt-search').val();
 				var activeCol=tl.find('thead').find('tr').find('th').find(".odt-active");
 				var current_status=activeCol.parent().data('sort');
 				var colno=activeCol.data("colno");
@@ -518,8 +518,8 @@
 					}
 
 
-					var noRecPerPage=tl.prev('div').find('.odt-display-record').find("select").val();
-					var SearchData=tl.prev('div').find('.odt-search').val();
+					var noRecPerPage=$('.odt-display-record').find("select").val();
+					var SearchData=$('.odt-search').val();
 					
 					tl.allSettings[2]=noRecPerPage;
 					tl.allSettings[3]=SearchData;

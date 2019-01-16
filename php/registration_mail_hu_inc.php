@@ -3,6 +3,8 @@
 	$subject = 'Regisztráció a '.$this->BUSS_NAME.' honlapján';
 	$message = '<h1>Tisztelt '.$row["name"].'!</h1>';
 
+	$message .= '<p><b>Ez egy automatikus e-mail, kérjük ne válaszoljon.</b></p>';
+
 	$message .= '<p>Ezt a levelet azért kapta, mert Ön vagy valaki a nevében regisztrált a '.$this->BUSS_NAME.' honlapján.</p>';
 
 	$message .= '<p>A regisztráció megerősítéséhez kérem kattintson az alábbi linkre:</p>';
