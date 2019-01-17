@@ -42,7 +42,7 @@ class CompetitionEntry extends Config
 	{ 
 		if ( $stmt = $this->db->prepare("SELECT id FROM competition 
 										 WHERE reg_start_date <= '".date("Y-m-d H:i:s")."' 
-										 AND reg_end_date >='".date("Y-m-d H:i:s")."' AND linked_to = ? ORDER BY start_date") )
+										 AND reg_end_date >='".date("Y-m-d H:i:s")."' AND linked_to = ? AND deleted=0 ORDER BY start_date") )
 		{
 			$stmt->bind_param("s", $linkedTo);
 			$stmt->execute();
