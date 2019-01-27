@@ -129,7 +129,7 @@ if(isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1)
 							return;
 						break;
 						case "addUser":
-							$isAdmin = isset($_POST["isAdmin"]) ? $_POST["isAdmin"]: 0;
+							$isAdmin = !isset($_POST["isAdmin"]) ? 0: $_POST["isAdmin"];
 							$returnArray["message"] = $user -> addUser(	
 																			$_POST["lastname"],
 																			$_POST["firstname"],

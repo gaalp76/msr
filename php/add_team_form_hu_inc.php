@@ -21,10 +21,24 @@
 	else
 	{
 		$teamID = -1;
-		$html .=	'<div style="width:100%; overflow:auto;"><button style="float:left" id="show-add-team-form-btn" type="button" class="blue1">Csapat létrehozás</button>';
-		$html .=	'<button style="float:left; margin-left:10px" id="delete-team-btn" type="button" class="disabled" disabled>Csapat töröl</button></div>';
+		$html .=	'<div style="width:100%; overflow:auto;"><button style="float:left" id="show-add-team-form-btn" type="button" class="blue1">Csapat/váltó létrehozás</button>';
+		$html .=	'<button style="float:left; margin-left:10px" id="delete-team-btn" type="button" class="disabled" disabled>Csapat/váltó töröl</button></div>';
 	}
 
+	$html .=	'</div>';
+
+	$html .=	'<div id="add-team-rules">';
+	$html .= 	'<h2>A csapat/váltó alakítás lépései</h2>';
+	$html .=  	'<ol>';
+	$html .=    	'<li>Csapatot/váltót csak azután lehet létrehozni, miután egyéni nevezésüket jóváhagytuk.</li>';
+	$html .=    	'<li>Csapatot/váltót csak a honlapon <b>regisztrált felhasználó</b> hozhat létre (jobb felső sarok)</li>';
+	$html .=    	'<li>A csapatkapitány és a csapattagok/váltótagok a fenti lépések szerint neveznek a versenyre.</li>';
+	$html .=    	'<li>A csapatkapitány elkéri a csapattagok/váltótagok regisztrációs kódját.</li>';
+	$html .=    	'<li>A csapatkapitány a honlapon a nevezések menüpont alatt kitölti a csapat/váltó alakítás űrlapját.</li>';
+	$html .=    	'<li>A csapattagok/váltótagok emailt kapnak a csapattagi/váltótagi felkérésről.</li>';
+	$html .=    	'<li>A csapattagok/váltótagok az emailben a megadott linkre kattintva elfogadhatják a csapattagi/váltótagi felkérést.</li>';
+	$html .=    	'<li>Amennyiben minden csapattag/váltótag megerősíttete részvételi szándékát a csapatban/váltóban, a csapat/váltó megalakult.</li>';
+	$html .=  	'</ol>';
 	$html .=	'</div>';
 
 	$html .= '<form id="add-team-form" name="add-team-form" method="post" action="#">';
@@ -57,7 +71,7 @@
 						'.
 						$teamName = ($teamID > 0 ? 'readonly' : '').'>';
 		if ($teamID > 0)
-			$html .= 	'<div '.$status = ($isMember ? 'class="ok-sign" title="Csatlakozás a csapathoz elfogadva.' : 'class="question-mark" title="Visszaigazolásra vár.'). '"></div>';
+			$html .= 	'<div '.$status = ($isMember ? 'class="ok-sign" title="Csatlakozás a csapathoz/váltóhoz elfogadva.' : 'class="question-mark" title="Visszaigazolásra vár.'). '"></div>';
 		
 	}
 

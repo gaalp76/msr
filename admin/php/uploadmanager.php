@@ -1090,6 +1090,7 @@ class UploadManager extends Config
 			ORDER BY uploadmanager_folder.name, uploadmanager_file.subtitle, uploadmanager_file.original_file_name
 			") )
 		{
+			
 			$stmt->bind_param("sssss", $lang, $lang, $linkedTo, $instanceOf, $instanceID);
 			$stmt->execute();
 			$stmt->store_result();

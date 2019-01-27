@@ -8,7 +8,7 @@ $db = Database::getConnection();
 $str_length = 5;
 $competitionID = $_GET['param'];
 $odt_search = (!empty($_GET['odtSearch']))?$_GET['odtSearch']:"";
-$sort_col = (!empty($_GET['sortCol']))?$_GET['sortCol']:0;	
+$sort_col = (!empty($_GET['sortCol']))?$_GET['sortCol']:2;	
 $sort_type = (!empty($_GET['sortType']))?$_GET['sortType']:"ASC";
 $search_col = array(
 						"team_name",

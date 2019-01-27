@@ -22,7 +22,7 @@
     <link href="css/dropzone.css" rel="stylesheet">
 
 	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/main.js?v=1.0.0.4"></script>
+	<script src="js/main.js?v=1.0.0.5"></script>
 
 	<script src="js/jquery-ui.js"></script>
 

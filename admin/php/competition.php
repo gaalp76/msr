@@ -102,10 +102,8 @@ class Competition extends Config
 									$reg_end_date,
 									$max_reg_number,
 									$reg_type,
-                                                                        $teamate_number,
-									$comp_dist_1,
-									$comp_dist_2,
-									$comp_dist_3,
+                                    $teamate_number,
+									$comp_dist,
 									$linkedTo
 								)
 	{
@@ -117,35 +115,50 @@ class Competition extends Config
 																	max_reg_number,
 																	reg_type,
 																	linked_to,
-																	teamate_number,
-																	comp_dist_1,
-																	comp_dist_2,
-																	comp_dist_3
+																	teamate_number
 
 																)
 										VALUES 
-										(?,?,?,?,?,?,?,?,?,?)
+										(?,?,?,?,?,?,?)
 										"))
 		{
 			$start_date = $start_date." ".$start_hour."-".$start_minute;
-			$stmt->bind_param("sssissiiii",
+			$stmt->bind_param("sssissi",
 										$start_date,
 										$reg_start_date,
 										$reg_end_date,
 										$max_reg_number,
 										$reg_type,
 										$linkedTo,
-										$teamate_number,
-										$comp_dist_1,
-										$comp_dist_2,
-										$comp_dist_3
+										$teamate_number
 							);
 			$stmt->execute();
 			if ($stmt->affected_rows > 0)
 			{
+				$this->competitionID = $stmt->insert_id;
+				$stmt->close();
+
+				foreach ($comp_dist as $id) 
+				{
+					if ($stmt = $this->db->prepare("INSERT INTO competition_distance (
+																		competition_id,
+																		distance_id
+																	)
+													VALUES (?,?)
+											"))
+					
+					{
+						$stmt->bind_param("ii",
+											$this->competitionID,
+											$id
+								);
+						$stmt->execute();
+						$stmt->close();
+					}					
+				}
 				return "success_save";
 			}
-			
+			else return "failed_database";	
 		}
 		else return "failed_database";
 	}
@@ -175,9 +188,7 @@ class Competition extends Config
 									$max_reg_number,
 									$reg_type,
 									$teamate_number,
-									$comp_dist_1,
-									$comp_dist_2,
-									$comp_dist_3
+									$comp_dist
 									)
 	{
 		
@@ -187,32 +198,61 @@ class Competition extends Config
 																	reg_end_date = ?,
 																	max_reg_number = ?,
 																	reg_type = ?,
-																	teamate_number = ?,
-																	comp_dist_1 = ?,
-																	comp_dist_2 = ?,
-																	comp_dist_3 = ?
+																	teamate_number = ?
 
 
 										WHERE id = ?
 										"))
 		{
 			$start_date = $start_date." ".$start_hour."-".$start_minute;
-			$stmt->bind_param("sssisiiiii",
+			$stmt->bind_param("sssisii",
 										$start_date,
 										$reg_start_date,
 										$reg_end_date,
 										$max_reg_number,
 										$reg_type,
 										$teamate_number,
-										$comp_dist_1,
-										$comp_dist_2,
-										$comp_dist_3,
 										$this-> competitionID
 							);
 			$stmt->execute();
+			
+			$stmt->close();
+			$this -> deleteCompetitionDistance();
+			
+			foreach ($comp_dist as $id) 
+			{
+				if ($stmt = $this->db->prepare("INSERT INTO competition_distance (
+																	competition_id,
+																	distance_id
+																)
+												VALUES (?,?)
+										"))
+				
+				{
+					$stmt->bind_param("ii",
+										$this->competitionID,
+										$id
+							);
+					$stmt->execute();
+					$stmt->close();
+				}					
+			}
+
 			return "success_save";
 		}
 		else return "failed_database";
+	}
+
+	public function deleteCompetitionDistance()
+	{
+		if ($stmt = $this->db->prepare("DELETE FROM competition_distance  WHERE competition_id = ?"))
+					
+		{
+			$stmt->bind_param("i", $this->competitionID);
+			$stmt->execute();
+			$stmt->close();
+		}
+		else return "failed_database";	
 	}
 
 	public function getRegistrationTypeComboBox($registrationType, $disabled)
@@ -280,12 +320,32 @@ class Competition extends Config
 		$html .= $this->getRegistrationTypeComboBox($dataShow?$row["reg_type"]:"", $disabled);
                 $html .= "<fieldset>";
     	$html .= 	"<legend>Versenytávok</legend>";
-		$html .= "<label for='comp_dist_1'>5+ km</label>";
-		$html .= "<input type='checkbox' id='comp_dist_1' name='comp_dist_1' value='1'  ".$disabled."  ".(($dataShow && $row["comp_dist_1"]=="1")?"checked":"")."/>";
-		$html .= "<label for='comp_dist_2'>10+ km</label>";
-		$html .= "<input type='checkbox' id='comp_dist_2' name='comp_dist_2' value='1'  ".$disabled."  ".(($dataShow && $row["comp_dist_2"]=="1")?"checked":"")."/>";
-		$html .= "<label for='comp_dist_3'>15+ km</label>";
-		$html .= "<input type='checkbox' id='comp_dist_3' name='comp_dist_3' value='1'  ".$disabled."  ".(($dataShow && $row["comp_dist_3"]=="1")?"checked":"")."/>";
+
+    	if ($stmt = $this->db->prepare("SELECT * FROM distance"))
+		{
+			$stmt->execute();
+			$result = $stmt->get_result();
+			$stmt->close();
+			
+			while($row = $result->fetch_assoc())
+			{
+				if ($stmt = $this->db->prepare("SELECT * FROM competition_distance WHERE competition_id = ? AND distance_id = ?"))
+				{
+					$distanceID = $row["id"];
+					$stmt->bind_param("ii", $this->competitionID, $distanceID);
+					$stmt->execute();
+					$stmt->store_result();
+
+					$html .= "<label for='comp_dist_".$row["id"]."'>".$row["name"]."</label>";
+					$html .= "<input type='checkbox' id='comp_dist_".$row["id"]."' class='competition-distance' name='comp_dist[]' value='".$row["id"]."'  ".$disabled."  ".(($dataShow && $stmt->num_rows)?"checked":"")."/>";
+					$stmt->close();
+				}
+				else return -1;
+			}
+				
+		}
+		else return -1;
+			
 		$html .= "</fieldset>";
                 $html .= "</fieldset>";
 		$html .= "</form>";

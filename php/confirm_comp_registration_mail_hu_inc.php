@@ -1,15 +1,13 @@
 <?php  
 	$str_length = 5;
-
+	$specifiedMessage = '';
 	switch ($rowComp["linked_to"]) {
 		case 'sr':
 			$competitionName = 'Survival Run';
-			$specifiedMessage = '';
 			$contact = "sr@survivalrun.hu";
 			break;
 		case 'msr':
 			$competitionName = 'Military Survival Run';
-			$specifiedMessage = '';
 			$contact = "msr@survivalrun.hu";
 			break;
 		case 'vulcanrun':
@@ -24,8 +22,6 @@
 			break;
 		case 'halfmarathon':
 			$competitionName = 'III. Festék Bázis Jánosházai Félmaraton';
-			$specifiedMessage = '';
-
 			$specifiedMessage .= '<table border="1">';
 			$specifiedMessage .= '	<tbody>';
 			$specifiedMessage .= '		<tr>';
@@ -83,7 +79,7 @@
 			break ;
 		case 'vulcanobstacle':
 			$competitionName = 'Vulcan Run - akadályfutás';
-			$specifiedMessage .= '<table border="0">';
+			$specifiedMessage = '<table border="0">';
 			$specifiedMessage .= '	<tbody>';
 			$specifiedMessage .= '		<tr>';
 			$specifiedMessage .= '			<td><b>Kedvezm&eacute;nyezett neve:</td></b>';
@@ -104,34 +100,34 @@
 			$specifiedMessage .= '	</tbody>';
 			$specifiedMessage .= '</table>';
 
-			$specifiedMessage .= '<table border="0">';
+			$specifiedMessage .= '<table border="1">';
 			$specifiedMessage .= '	<tbody>';
 			$specifiedMessage .= '		<tr>';
 			$specifiedMessage .= '			<th>Táv</th>';
 			$specifiedMessage .= '			<th>Február 05-ig</th>';
-			$specifiedMessage .= '			<th>Márciusv 05-ig</th>';
+			$specifiedMessage .= '			<th>Március 05-ig</th>';
 			$specifiedMessage .= '			<th>Április 1-ig</th>';
 			$specifiedMessage .= '			<th>Helyszíni nevezés</th>';
 			$specifiedMessage .= '		</tr>';
 			$specifiedMessage .= '		<tr>';
-			$specifiedMessage .= '			<td>8+ km</td>';
-			$specifiedMessage .= '			<td>9.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>10.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>11.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>13.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td>7+ km</td>';
+			$specifiedMessage .= '			<td align="right">9.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">10.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">11.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">13.000 Ft/fő</td>';
 			$specifiedMessage .= '		</tr>';
 			$specifiedMessage .= '		<tr>';
 			$specifiedMessage .= '			<td>14+ km</td>';
-			$specifiedMessage .= '			<td>11.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>12.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>13.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>15.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">11.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">12.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">13.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">15.000 Ft/fő</td>';
 			$specifiedMessage .= '		</tr>';
 			$specifiedMessage .= '		<tr>';
 			$specifiedMessage .= '			<td>Póló</td>';
-			$specifiedMessage .= '			<td>2.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>2.000 Ft/fő</td>';
-			$specifiedMessage .= '			<td>2.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">2.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">2.000 Ft/fő</td>';
+			$specifiedMessage .= '			<td align="right">2.000 Ft/fő</td>';
 			$specifiedMessage .= '			<td>nincs lehetőség</td>';
 			$specifiedMessage .= '		</tr>';
 			
@@ -145,7 +141,7 @@
 	$subject = 'Nevezés megerősítése a '.$competitionName.' versenyre';
 	$message = '<h1>Tisztelt '.$rowCompReg["name"].'!</h1>';
 
-	$message .= '<p><b>Ez egy automatikus e-mail, kérjük ne válaszoljon rá. Amennyiben kérdése van a versennyel kapcsolatban, kérjük a következő e-mail címen érdeklődjön:'. $contact.'</b></p>';
+	$message .= '<p><b>Ez egy automatikus e-mail, kérjük ne válaszoljon rá. Amennyiben kérdése van a versennyel kapcsolatban, kérjük a következő e-mail címen érdeklődjön: '. $contact.'</b></p>';
 
 	$message .= '<p>Regisztrációját megerősítettük. A továbbiakban kérjük utalja a megfelelő összeget az alábbiak szerint:</p>';
 

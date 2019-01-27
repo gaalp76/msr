@@ -1,4 +1,15 @@
 **************************************************************
+                           v2.1
+**************************************************************
+
+	a nevezés visszavonásánál a "nevezésed visszavontuk" szöveg szerepeljen
+	az adminba a nevezéseknél a törlés és visszavonás után ne töltődjön újra az oldal
+	rajtlista legyen megnézhető
+	az emailekbe be lehetne írni a csapat/váltó alakítás lépéseit
+ok	vulkán akadályverseny regisztrációs emailbe a nevezési díjakat beírni
+
+
+**************************************************************
                            v2.0
 **************************************************************
 
@@ -6,7 +17,7 @@ ok	táblázat betütípus kisebbre
 ok	azonosító szerinti rendezés vagy fizetettek
 ok	keresés nemgy kód szerint ok
 ok	adminból lehessen megerősítő mailt küldeni
-	az exportált táblázatba kerüljön be a státutsz
+ok	az exportált táblázatba kerüljön be a státutsz
 ok	legyen látható a regisztráltak címe
 ok	lehessen törölni a versenyre regisztráltakat
 ok	legyen látható hogy ki ment-e a versenyre reg mail 
@@ -19,13 +30,11 @@ ok	ne válaszolj üzenet az automatikus emailekbe
 ok	emailek küldése kézzel (mindenkinek és választás alapján)
 	hírlél küldés elfogadása a regisztrációkor
 ok	az elfogadott nevezések száma is legyen látható
-	regisztráció után is lehessen csapatot csinálni?
 ok	a nevezések között legyen reg dátum
-	a kézzel kiküldött leveleknél legyen látható hányszor lett elküldve
 ok	a táblázat oszlopai legyenek elrejthetők
 
 ok	párhuzamosan több verseny (automatikus levelek versenyenként különböznek)
-	a verseny regisztrációs szám és verseny táv legyen versenyhez közhető
+ok	a verseny regisztrációs szám és verseny táv legyen versenyhez közhető
 ok	fejlécbe email facebook media
 
 ---------------------------------------------------------------
@@ -51,19 +60,15 @@ ok	IOS rendszeren elrejteni a képeket a kezdőoldalon
 ok	a nevezés törlésénél szerepeljenek a törlés lehetséges okai.
 ok  mobilnézet hibajavítás
 ok  a megerősítés dátuma kerüljön bele az admin nevezések táblázatba
+ok	az 5 napnál régebben regisztrált versenyzők színkódolása
 
-	a nevezés visszavonásánál a "nevezeésed visszavontuk" szöveg szerepeljen
-	az adminba a törlés és visszavonás után ne töltődjön újra az oldal
-	az 5 napnál régebben regisztrált versenyzők színkódolása
+
+
+
+
 
 	Admin nevezések listájának mezői
 	Megerősítő e-mail - a versenyző megerősítés dátuma vagy levél újraküldése
-
-	t594hc02058
-
-	csontkovács 
-	Maszlov Krisztián
-	Kőszeg Rákóczi u. 66.
-	06 30 311 0051
+	
 
 

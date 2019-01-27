@@ -1,4 +1,15 @@
 <?php 
+
+switch ($linkedTo) {
+	case 'halfmarathon':
+		$responsibiltyStatement = '../docs/versenyszabalyzat_felelossegvallalasi_nyilatkozat_halfmarathon_2019.pdf';
+		break;
+	
+	case 'vulcanobstacle':
+		$responsibiltyStatement = '../docs/felelossegi_nyilatkozat_vulcanrun_akadaly_2019.docx';
+		break;
+}
+
 $html  = '<div><div class="banner-image" style="background-image:url(img/registration-banner-1.jpg)"></div>';
 
 if($isCompetitionRegister)
@@ -10,7 +21,7 @@ if($isCompetitionRegister)
 	$html .= 	'<li>Nem regisztrált felhasználó esetén az összes mezőt ki kell tölteni.</li>';
 	$html .= 	'<li>Az adatok helyes kitöltése, valamint az adatvédelmi, felelősségvállalási nyilatkozat és a versenyszabályzat elfogadása után a nevezés gombra kell kattintani.</li>';
 	$html .= 	'<li>A megadott email címre kiküldünk egy levelet, melyben ellenőrizheti adatait, valamint a "Nevezés megerősítése" linkre kattintva véglegesítheti nevezési szándékát.</li>';
-	$html .= 	'<li>A következő lépésben az emailben lévő bankszámlaszámra kell elutalni a nevezési összeget. <b>A regisztrációs emailben kapott kódot, a versenytávot, valamint ha váltóban induk a "valto" szót kérjük az utalás közleményében feltüntetni szíveskedjen! (pl. halfmarathon00001 10km valto</b></li>';
+	$html .= 	'<li>A következő lépésben az emailben lévő bankszámlaszámra kell elutalni a nevezési összeget. <b>A regisztrációs emailben kapott kódot, a versenytávot, valamint ha váltóban/csapatban indul a "valto" vagy "csapat" szót, és a <span style="color:red"> váltó/csapat tagok regisztrációs kódját</span> kérjük az utalás közleményében feltüntetni szíveskedjen! (pl. halfmarathon00001 10km valto/csapat)</b></li>';
 	$html .= 	'<li>A szervezők a nevezés elfogadásáról a megadott email címen értesítik.</li>';
 	$html .= 	'<li>A nevezés elfogadásra került.</li>';
 	$html .=  	'</ol>';
@@ -135,7 +146,7 @@ $html .= 	'</div>';
 if($isCompetitionRegister)
 {
 
-	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf" target="_blank"> adatvédelmi-</a> valamint a <a href="../docs/versenyszabalyzat_felelossegvallalasi_nyilatkozat.pdf">verseny
+	$html .=	'<div class="btn-container">Elfogadom az <a href="../docs/adatvedelmi_szabalyzat.pdf" target="_blank"> adatvédelmi-</a> valamint a <a href="'.$responsibiltyStatement.'"  target="_blank">verseny
 szabályzatot és felelősségvállalási nyilatkozatot</a>.<input type="checkbox" name="accept_rules" id="accept_rules"></div>';
 	$html .=	'<div class="btn-container">';
 	$html .= 		'<button id="sign-up-btn" type="button" class="blue2">Nevezek</a>';

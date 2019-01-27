@@ -104,8 +104,7 @@ switch ($menu)
 		$returnArray["content"] = $user->getUserMenu($_SESSION["lang"]);
 		//if (isset($_SESSION["logedin"]) && $_SESSION["logedin"] == 1) $returnArray["login_container"] = $user->getLogoutButton();
 		//else 
-
-		$returnArray["login_container"] = $user->getUserLoginForm($_SESSION["lang"]);
+			$returnArray["login_container"] = $user->getUserLoginForm($_SESSION["lang"]);
 	break;
 
 	case $linkedTo."ForgotPassword".$instanceOf:
@@ -185,8 +184,7 @@ switch ($menu)
 				break;
 			}
 		}
-		
-		$returnArray["content"] = $user->getUserRegisterForm($_SESSION["lang"]);
+		$returnArray["content"] = $user->getUserRegisterForm($linkedTo, $_SESSION["lang"]);
 		
 	break;
 
@@ -226,7 +224,7 @@ switch ($menu)
 					$user->userID = 0;
 				break;
 				case "showRegisterForm":
-					$returnArray["content"] = $user->getUserRegisterForm($_SESSION["lang"],$user->getUserData($user->userID));
+					$returnArray["content"] = $user->getUserRegisterForm($linkedTo, $_SESSION["lang"],$user->getUserData($user->userID));
 				break;
 			}
 		}
@@ -705,7 +703,7 @@ switch ($menu)
 				}
 				else
 				{
-					$returnArray["content"] .= $user->getUserRegisterForm($_SESSION["lang"],isset($user->userID)?$user->getUserData($user->userID):"",1, $competition_entry->getCompetitionType($competitionID), $competitionID);
+					$returnArray["content"] .= $user->getUserRegisterForm($linkedTo, $_SESSION["lang"],isset($user->userID)?$user->getUserData($user->userID):"",1, $competition_entry->getCompetitionType($competitionID), $competitionID);
 				}
 			}
 		}

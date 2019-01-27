@@ -215,30 +215,22 @@ class CommonUser extends User
 	public function getCompetitionDistanceComboBox($competitionID)
 	{
 		$html = "<select id='comp_dist' name='comp_dist'>";
-		if ($stmt = $this->db->prepare("SELECT * FROM competition WHERE id = ? AND deleted = '0'"))
+		if ($stmt = $this->db->prepare("SELECT * FROM competition_distance INNER JOIN distance ON competition_distance.distance_id = distance.id WHERE competition_distance.competition_id = ? "))
 		{
 			$stmt->bind_param("i", $competitionID);
 			$stmt->execute();
 			$result = $stmt->get_result();
-			$row = $result->fetch_assoc();
-			if ($row["comp_dist_1"]=="1")
+			while($row = $result->fetch_assoc())
 			{
-				$html .= "<option value='1'>5+ km</option>";
+				$html .= "<option value='".$row["distance_id"]."'>".$row["name"]."</option>";
 			}
-			if ($row["comp_dist_2"]=="1")
-			{
-				$html .= "<option value='2'>10+ km</option>";
-			}
-			if ($row["comp_dist_3"]=="1")
-			{
-				$html .= "<option value='3'>15+ km</option>";
-			}
+		
 		}
 		else return -1;
 		$html .= "</select>";
 		return $html;
 	}
-	public function getUserRegisterForm($lang="hu", $userDataArray="", $isCompetitionRegister="", $CompetitionType="", $competitionID="")
+	public function getUserRegisterForm($linkedTo, $lang="hu", $userDataArray="", $isCompetitionRegister="", $CompetitionType="", $competitionID="")
 	{
 		
 		$fileName = "registration_form_".$lang."_inc.php";
@@ -504,7 +496,7 @@ class CommonUser extends User
 		}
 
 		$mail = new PHPMailer(true);                            // Passing `true` enables exceptions
-		try {
+		
 			//Server settings
 			$mail->SMTPDebug = 0;                               // Enable verbose debug output
 			$mail->isSMTP();                                    // Set mailer to use SMTP
@@ -528,12 +520,7 @@ class CommonUser extends User
 		
 			$mail->send();
 			return 1;
-		}
-		catch (Exception $e) 
-		{		
-			//echo 'failed_mail'.$e;
-			//return 0;
-		}
+		
 	}
 
 	public function getLogoutButton($lang="hu")

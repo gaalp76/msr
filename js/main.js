@@ -599,8 +599,17 @@ function load_content(url)
 							show_article_title(menu);
 							if (data.document) 
 							{
-								$('#content').append('<div id="right-side-bar"><span>'+$.validator.messages["attached_documents"]+'</span>'+data.document+'</div>')	
-								
+								if ($('#content-container').length) 
+								{
+									$('#content-container').html('<div id="right-side-bar"><span>'+$.validator.messages["attached_documents"]+'</span>'+data.document+'</div>');
+								}
+								else{
+									$('#content-container').append('<div id="right-side-bar"><span>'+$.validator.messages["attached_documents"]+'</span>'+data.document+'</div>');
+								}
+							}
+							else
+							{
+								$('#right-side-bar').remove();
 							}
 
 							$('#content-container').slideDown();

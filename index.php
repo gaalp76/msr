@@ -27,7 +27,7 @@
 	<script src="js/jquery-ui.js"></script>
 
 	<script src="js/jquery.validate.js"></script>
-	<script src="js/config.js"></script>
+	<script src="js/config.js?v=1.0.0"></script>
 	<script src="js/jquery-confirm.js"></script>
 	<script src="js/jquery.maskedinput.js"></script>
 	<script src="gallery/js/unitegallery.min.js"></script>

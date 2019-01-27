@@ -2725,8 +2725,6 @@ function load_content(url)
 									$(".odt-pagination-container").html("");
 									$(".entry-table").tableHeadFixer();
 									
-									
-									
 									$(".entry-table").OpenDataTable({  
 										url:"../admin/php/competition_entry_list.php",
 										param: $(this).val(),
@@ -2849,7 +2847,7 @@ function load_content(url)
 													}
 												});
 
-												//********* mark out of date registrations start **********
+												//********* mark out of date registrations end **********
 
 												
 												$('.btn-primary').each(function() {
@@ -3019,8 +3017,6 @@ function load_content(url)
 
 										}
 									});
-									
-									
 
 									$('#modify_accepted').click(function(e){
 										$.confirm({
@@ -3049,9 +3045,68 @@ function load_content(url)
 										});
 
 									});
+
+									
+
+									
 								}
+
 								$('.odt-top').insertBefore($('#entry-table-container'));
 								$(".entry-table").hideCols();
+
+								// save hidden cols to localStorgae to restore
+								
+								var hiddenColsArray = localStorage.getItem('hiddenCols') !== null &&  localStorage.getItem('hiddenCols') != '' ? localStorage.getItem('hiddenCols').split(',') : [];
+								
+								$('.hide-col').click(function(e)
+								{
+									var colNo = $(this).parent().next().attr('data-colno');
+									if (hiddenColsArray.indexOf(colNo) == -1) hiddenColsArray.push(colNo);
+									var hiddenColsStr = hiddenColsArray.toString();
+
+									localStorage.setItem('hiddenCols', hiddenColsStr);
+
+									$('.btn-primary').click(function()
+									{
+										var colNo = $(this).attr('data-show');
+										if ((index=hiddenColsArray.indexOf(colNo)) != -1) hiddenColsArray.splice(index, 1);
+
+										var hiddenColsStr = hiddenColsArray.toString();
+										localStorage.setItem('hiddenCols', hiddenColsStr);
+
+									})
+								});
+
+
+								// if localStorage is supported set page settings
+
+								$('.odt-display-record').change(function() {	// catch event by eventbubbling
+									localStorage.setItem('recPerPage', $('#odt-rec-per-page').val());
+								})
+								
+								if (localStorage.getItem('recPerPage') !== null)
+								{
+									$('#odt-rec-per-page').val(localStorage.getItem('recPerPage'));
+									$('#odt-rec-per-page').change();
+								}
+
+								if (localStorage.getItem('hiddenCols') !== null)
+								{
+									//hiddenColsArray = localStorage.getItem('hiddenCols').split(',');
+									$.each(hiddenColsArray, function(index, val)
+									{
+										$('th div.odt-col').each(function(index1)
+										{
+											if (val == $(this).attr('data-colno'))
+												$(this).parents('th').find('.hide-col').click();
+										});
+										
+									});
+									
+								}
+
+
+
 							});
 
 

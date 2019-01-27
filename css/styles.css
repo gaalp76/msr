@@ -90,6 +90,11 @@ main{
 	z-index: 100;
 	color: #555;
 }
+
+.document-container{
+	margin-top: 15px;
+}
+
 #content-container p, #content-container ul, #content-container ol, #content-container span{
 	font-size: calc(0.7rem + 0.4vw);
 	line-height: 150%;
@@ -98,6 +103,8 @@ main{
 #content{
 	margin:40px 25px 0 25px;
 	text-align: justify;
+	width: 70%;
+	float: left;
 }
 #content-container table, not:(.document_container){
 	border: 1px solid #444;
@@ -156,7 +163,6 @@ main{
 	font-size: 80%;
 }
 .document-container .documents td{
-	white-space: nowrap;
 	line-height: 120%;
 }
 #content-container h2{
@@ -185,7 +191,7 @@ main{
 	height: 100%;
 	border-left: 1px solid #ededed;
 	float: right;
-	padding: 10px;
+	padding: 50px 10px 10px 10px;
 }
 #wrapper{
 	width: 100%;
@@ -359,7 +365,7 @@ main{
 #box-container div{
 	background-color: white;
 	border-radius: 4px;
-	padding: 8px;
+	padding: 6px;
 }
 #box-container div img{
 	width: 100%;
@@ -427,7 +433,7 @@ main{
 }
 .tile-container .tile{
 	font-family: 'Didact Gothic', sans-serif;/*'Black Ops One', cursive;*/
-	font-size: calc(0.4rem + 0.9vw);
+	font-size: calc(0.4rem + 1.7vh);
 	line-height: 45px;
 	padding: 0 15px; 
 	cursor: pointer;
@@ -731,7 +737,7 @@ form div{
 	font-weight: bold;
 }
 .doc-list-item{
-	margin-left: 20px;
+	display: inline-block;
 }
 
 /*************************** News *****************************************/
@@ -959,10 +965,10 @@ footer .copyright{
 	}
 	footer .sponsors a
 	{
-		height:30px;
+		/*height:30px;*/
 	}
 	footer{
-		height: 115px;
+		height: 85px;
 	}
 	#logo, 
 	#box-container, 
@@ -1057,7 +1063,7 @@ footer .copyright{
 		background-position: center;
 	}
 	footer{
-		display: none;
+		/*display: none;*/
 	}
 }
 

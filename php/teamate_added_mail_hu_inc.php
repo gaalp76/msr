@@ -11,10 +11,10 @@
 			break ;
 
 	}
-	$subject = 'Csapat létrehozás a '.$competitionName.' versenyre';
+	$subject = 'Csapat - váltó létrehozás a '.$competitionName.' versenyre';
 	$message = '<h1>Tisztelt '.$row["name"].'!</h1>';
 
-	$message .= '<p>Ezt a levelet azért kapta, mert a '.$this->BUSS_NAME.' honlapján a '.$competitionName.' versenyre nevezett és elfogadta felvételét "'.$teamName.'" nevű váltó csapatába. </p>';	
+	$message .= '<p>Ezt a levelet azért kapta, mert a '.$this->BUSS_NAME.' honlapján a '.$competitionName.' versenyre nevezett és elfogadta felvételét "'.$teamName.'" nevű váltó csapatába/váltójába. </p>';	
 
 /*
 	$message .= '<p><b>A verseny időpontja: '.$row['start_date'].'</b></p>';

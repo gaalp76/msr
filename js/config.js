@@ -1,10 +1,10 @@
 competitionsArray = [{
 	id: "default",
 	name: "",
-	promoMedia: ["img/box-img5.jpg", "img/box-img2.jpg", "img/box-img4.jpg"],
+	promoMedia: ["video/vulcanrun_promo.mp4", "img/box-img2.jpg", "img/vulcanrun_promo.jpg"],
 	facebookLink: "https://www.facebook.com/militarysurvivalrun/?eid=ARCUVt0oC0_M5v3qXoRYqzF5fFuv7bIKyXcz3FkBE3IVSDzpFtHGpukQadkOzJ6ISq9-iG_eQ9uXdvEu",
 	mailto: "info@survivalrun.hu",
-	logo: ""
+	logo: "img/logos.png"
 },{
 	id: "msr",
 	name: "Military Survival Run",
@@ -22,14 +22,14 @@ competitionsArray = [{
 },{
 	id: "vulcanrun",
 	name:  "VulcanRun-terepfutás",
-	promoMedia: ["img/box-img5.jpg", "img/box-img2.jpg", "img/box-img4.jpg"],
+	promoMedia: ["img/box-img5.jpg", "img/box-img2.jpg", "img/vulcanrun_promo.jpg"],
 	facebookLink: "https://www.facebook.com/militarysurvivalrun/?eid=ARCUVt0oC0_M5v3qXoRYqzF5fFuv7bIKyXcz3FkBE3IVSDzpFtHGpukQadkOzJ6ISq9-iG_eQ9uXdvEu",
 	mailto: "vulcanrun@survivalrun.hu",
 	logo: "img/vulcanrun_logo.png"
 },{
 	id: "vulcanobstacle",
 	name: "VulcanRun-akadályfutás",
-	promoMedia: ["img/box-img5.jpg", "img/box-img2.jpg", "img/box-img4.jpg"],
+	promoMedia: ["video/vulcanrun_promo.mp4", "img/box-img2.jpg", "img/box-img4.jpg"],
 	facebookLink: "https://www.facebook.com/militarysurvivalrun/?eid=ARCUVt0oC0_M5v3qXoRYqzF5fFuv7bIKyXcz3FkBE3IVSDzpFtHGpukQadkOzJ6ISq9-iG_eQ9uXdvEu",
 	mailto: "vulcanobstacle@survivalrun.hu",
 	logo: "img/vulcanrun_logo.png"
